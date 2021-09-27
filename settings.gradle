@@ -6,6 +6,6 @@ dependencyResolutionManagement {
         jcenter() // Warning: this repository is going to shut down soon
     }
 }
-rootProject.name = "VerdimSDK"
+rootProject.name = "VerdiMSDK"
 include ':app'
 include ':myverdisdk'
