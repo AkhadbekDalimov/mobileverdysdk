@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Base application theme. -->
-    <style name="Base.Theme.App" parent="Theme.AppCompat.Light.DarkActionBar" />
-
+    <style name="Base.Theme.App" parent="Theme.AppCompat.Light.NoActionBar" />
     <style name="Theme.App.Light" parent="Base.Theme.App">
         <item name="colorPrimarySdk">@color/colorPrimarySdk</item>
         <item name="colorPrimaryDarkSdk">?attr/colorPrimaryDarkSdk</item>
@@ -17,7 +16,6 @@
         <item name="colorButtonEnabled">@color/colorButtonEnabled</item>
         <item name="colorButtonPressed">@color/colorButtonPressed</item>
         <item name="colorNextIcon">@color/colorNextIcon</item>
-
     </style>
 
     <style name="Theme.App.Dark" parent="Base.Theme.App">
@@ -36,5 +34,8 @@
         <item name="colorNextIcon">@color/colorNextIconDark</item>
 
     </style>
+
+    <style name="Theme.VerdiMSDK.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="Theme.VerdiMSDK.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
 </resources>

@@ -1,4 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="hello_first_fragment" translatable="false">Hello first fragment</string>
 
+    <string name="mrz1"><![CDATA[P<SURNAME<<NAME<<<<<<<<<<<<<<<<<<<<<<<<<<<]]></string>
+    <string name="mrz2"><![CDATA[ AB12345678UZB012345M311231012345678901234567]]></string>
+    <string name="Surname">SURNAME</string>
+    <string name="Name">NAME</string>
+    <string name="Nationality">NATIONALITY</string>
+    <string name="switch_camera_button_alt"><![CDATA["   <string name=\"switch_camera_button_alt\">Переключить камеру</string>"]]></string>
+    <string name="capture_button_alt">Снимок</string>
+    <string name="ok">Ok</string>
 </resources>

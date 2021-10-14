@@ -7,16 +7,16 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatDialogFragment
 import androidx.appcompat.view.ContextThemeWrapper
 import uz.click.myverdisdk.R
-import uz.click.myverdisdk.core.VerdimUserConfig
+import uz.click.myverdisdk.core.VerdiUserConfig
 
 class RegisterFragment : AppCompatDialogFragment() {
-    private lateinit var config: VerdimUserConfig
+    private lateinit var config: VerdiUserConfig
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         config = requireArguments().getSerializable(
             MainDialogFragment.VERDIM_USER_CONFIG
-        ) as VerdimUserConfig
+        ) as VerdiUserConfig
 
         when (config.themeMode) {
             ThemeOptions.LIGHT -> {

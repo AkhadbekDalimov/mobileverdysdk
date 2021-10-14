@@ -2,4 +2,21 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="uz.click.myverdisdk">
 
+    <uses-permission android:name="android.permission.NFC" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <permission android:name="android.permission.READ_PHONE_STATE" />
+    <permission android:name="android.permission.READ_PRIVILEGED_PHONE_STATE" />
+
+    <application>
+        <activity
+            android:name=".impl.selfie.SelfieActivity"
+            android:exported="true" />
+        <activity
+            android:name=".impl.scan.ScanActivity"
+            android:exported="true"
+            android:theme="@style/Base.Theme.App" />
+    </application>
+
 </manifest>

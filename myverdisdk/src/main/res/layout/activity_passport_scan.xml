@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.camera.view.PreviewView
+        android:id="@+id/previewView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <uz.click.myverdisdk.util.GraphicOverlay
+            android:id="@+id/graphicOverlay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </androidx.camera.view.PreviewView>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clPassport"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/ivFlashButton"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <View
+            android:id="@+id/vRoundedRectangle"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="64dp"
+            android:background="@drawable/passport_background"
+            android:textSize="14dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:id="@+id/line"
+            android:layout_width="1dp"
+            android:layout_height="0dp"
+            android:background="@android:color/white"
+            app:layout_constraintBottom_toBottomOf="@+id/vRoundedRectangle"
+            app:layout_constraintEnd_toEndOf="@+id/vRoundedRectangle"
+            app:layout_constraintHorizontal_bias="0.3"
+            app:layout_constraintStart_toStartOf="@+id/vRoundedRectangle"
+            app:layout_constraintTop_toTopOf="@+id/vRoundedRectangle" />
+
+        <TextView
+            android:id="@+id/tvPassport"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:rotation="90"
+            android:text="passport"
+            android:textColor="@android:color/white"
+            android:textSize="14dp"
+            app:layout_constraintBottom_toBottomOf="@+id/vBackgroundCorner"
+            app:layout_constraintEnd_toEndOf="@+id/vRoundedRectangle"
+            app:layout_constraintStart_toEndOf="@id/vBackgroundCorner"
+            app:layout_constraintTop_toTopOf="@+id/vBackgroundCorner" />
+
+        <uz.click.myverdisdk.util.VerticalTextView
+            android:id="@+id/tvVerticalMrz"
+            android:layout_width="32dp"
+            android:layout_height="480dp"
+            android:text="@string/mrz1"
+            android:textColor="@android:color/white"
+            android:textSize="18dp"
+            app:layout_constraintBottom_toBottomOf="@+id/vRoundedRectangle"
+            app:layout_constraintEnd_toStartOf="@+id/line"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/tvVerticalMrzSecond"
+            app:layout_constraintTop_toTopOf="@+id/vRoundedRectangle" />
+
+        <uz.click.myverdisdk.util.VerticalTextView
+            android:id="@+id/tvVerticalMrzSecond"
+            android:layout_width="32dp"
+            android:layout_height="480dp"
+            android:text="@string/mrz2"
+            android:textColor="@android:color/white"
+            android:textSize="18dp"
+            app:layout_constraintBottom_toBottomOf="@+id/vRoundedRectangle"
+            app:layout_constraintEnd_toStartOf="@+id/tvVerticalMrz"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/vRoundedRectangle"
+            app:layout_constraintStart_toStartOf="@+id/vRoundedRectangle"
+            app:layout_constraintTop_toTopOf="@+id/vRoundedRectangle" />
+
+        <TextView
+            android:id="@+id/tvSurname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:rotation="90"
+            android:text="@string/Surname"
+            android:textColor="@android:color/white"
+            android:textSize="12dp"
+            app:layout_constraintEnd_toEndOf="@+id/vBackgroundCorner"
+            app:layout_constraintTop_toBottomOf="@+id/vBackgroundCorner" />
+
+        <TextView
+            android:id="@+id/tvName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:rotation="90"
+            android:text="@string/Name"
+            android:textColor="@android:color/white"
+            android:textSize="12dp"
+            app:layout_constraintEnd_toStartOf="@+id/tvSurname"
+            app:layout_constraintTop_toTopOf="@+id/tvSurname" />
+
+        <TextView
+            android:id="@+id/tvNationality"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12sp"
+            android:rotation="90"
+            android:text="@string/Nationality"
+            android:textColor="@android:color/white"
+            android:textSize="12dp"
+            app:layout_constraintEnd_toStartOf="@+id/tvName"
+            app:layout_constraintTop_toTopOf="@+id/tvName" />
+
+        <View
+            android:id="@+id/vBackgroundCorner"
+            android:layout_width="0dp"
+            android:layout_height="150dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="32dp"
+            android:background="@drawable/border_background"
+            app:layout_constraintBottom_toBottomOf="@+id/vRoundedRectangle"
+            app:layout_constraintEnd_toEndOf="@+id/vRoundedRectangle"
+            app:layout_constraintStart_toEndOf="@+id/line"
+            app:layout_constraintTop_toTopOf="@+id/vRoundedRectangle"
+            app:layout_constraintVertical_bias="0.15" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <ImageView
+        android:id="@+id/ivFlashButton"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="16dp"
+        android:rotation="90"
+        android:src="@drawable/flash"
+        android:tag="of"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent" />
+
+    <ImageView
+        android:id="@+id/ivBack"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="16dp"
+        android:rotation="90"
+        android:src="@drawable/close"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <uz.click.myverdisdk.util.views.OverlayViewQrCode
+        android:id="@+id/qrCodeView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+

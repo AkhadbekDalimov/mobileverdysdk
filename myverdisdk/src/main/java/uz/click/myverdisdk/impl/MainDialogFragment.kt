@@ -9,14 +9,14 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import uz.click.myverdisdk.R
-import uz.click.myverdisdk.core.VerdimUserConfig
-import uz.click.myverdisdk.core.callbacks.VerdimUserListener
+import uz.click.myverdisdk.core.VerdiUserConfig
+import uz.click.myverdisdk.core.callbacks.VerdiUserListener
 import uz.click.myverdisdk.core.errors.ArgumentEmptyException
 
 class MainDialogFragment : BottomSheetDialogFragment() {
     private val registerPage = RegisterFragment::class.java.name
-    private var listener: VerdimUserListener? = null
-    private lateinit var config: VerdimUserConfig
+    private var listener: VerdiUserListener? = null
+    private lateinit var config: VerdiUserConfig
     companion object {
         private const val APP_NAME = "air.com.ssdsoftwaresolutions.clickuz"
         const val VERDIM_USER_CONFIG = "VERDIM_USER_CONFIG"
@@ -28,7 +28,7 @@ class MainDialogFragment : BottomSheetDialogFragment() {
         const val IS_CLICK_EVOLUTION_ENABLED = "IS_CLICK_EVOLUTION_ENABLED"
 
 
-        fun newInstance(config: VerdimUserConfig?): MainDialogFragment {
+        fun newInstance(config: VerdiUserConfig?): MainDialogFragment {
             val bundle = Bundle()
             bundle.putSerializable(VERDIM_USER_CONFIG, config)
             val dialog = MainDialogFragment()
@@ -44,7 +44,7 @@ class MainDialogFragment : BottomSheetDialogFragment() {
             return
         }
         if (arguments == null) throw ArgumentEmptyException()
-        config = requireArguments().getSerializable(VERDIM_USER_CONFIG) as VerdimUserConfig
+        config = requireArguments().getSerializable(VERDIM_USER_CONFIG) as VerdiUserConfig
         when (config.themeMode) {
             ThemeOptions.LIGHT -> {
                 setStyle(STYLE_NO_FRAME, R.style.cl_MainDialogTheme)
@@ -156,7 +156,7 @@ class MainDialogFragment : BottomSheetDialogFragment() {
         transaction.commitAllowingStateLoss()
     }
 
-    fun setListener(listener: VerdimUserListener) {
+    fun setListener(listener: VerdiUserListener) {
         this.listener = listener
     }
 

@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+    <string name="mrz1"><![CDATA[P<SURNAME<<NAME<<<<<<<<<<<<<<<<<<<<<<<<<<<]]></string>
+    <string name="mrz2"><![CDATA[ AB12345678UZB012345M311231012345678901234567]]></string>
 </resources>
