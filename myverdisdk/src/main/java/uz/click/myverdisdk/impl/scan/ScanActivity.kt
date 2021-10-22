@@ -45,7 +45,6 @@ class ScanActivity : AppCompatActivity(),
     private var needUpdateGraphicOverlayImageSourceInfo = false
     private var lensFacing = CameraSelector.LENS_FACING_BACK
     private var cameraSelector: CameraSelector? = null
-    private var scanListener: VerdiScanListener? = null
     private var isQrCode = false
     private val TAG = this::class.java.name
 
@@ -54,12 +53,10 @@ class ScanActivity : AppCompatActivity(),
         const val VERDI_LISTENER = "verdiListener"
         fun getInstance(
             activity: Activity,
-            scanListener: VerdiScanListener,
             isQrCode: Boolean = false
         ): Intent {
             return Intent(activity, ScanActivity::class.java).apply {
                 putExtra(IS_QR_CODE, isQrCode)
-                putExtra(VERDI_LISTENER, scanListener)
             }
         }
     }
@@ -74,7 +71,6 @@ class ScanActivity : AppCompatActivity(),
         }
         getCameraProvider()
 
-        scanListener = intent.extras?.getSerializable(VERDI_LISTENER) as VerdiScanListener?
 
         isQrCode = intent.extras?.getBoolean(IS_QR_CODE) ?: false
         previewView = findViewById<PreviewView>(R.id.previewView)
@@ -268,7 +264,7 @@ class ScanActivity : AppCompatActivity(),
             } else {
                 DocType.PASSPORT
             }
-            scanListener?.onScanSuccess()
+            VerdiUser.config.scanListener?.onScanSuccess()
         }
         finish()
     }

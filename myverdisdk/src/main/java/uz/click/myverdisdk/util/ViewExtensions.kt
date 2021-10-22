@@ -1,10 +1,16 @@
 package uz.click.myverdisdk.util
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Matrix
 import android.os.Build
+import android.util.Base64
 import android.view.DisplayCutout
 import android.view.View
 import android.widget.ImageButton
 import androidx.annotation.RequiresApi
+import androidx.camera.core.ImageProxy
+import java.io.ByteArrayOutputStream
 
 /** Milliseconds used for UI animations */
 const val ANIMATION_FAST_MILLIS = 50L
@@ -44,4 +50,28 @@ fun View.padWithDisplayCutout() {
         insets.displayCutout?.let { doPadding(it) }
         insets
     }
+}
+
+
+fun ImageProxy.toBitmap(): Bitmap? {
+    val planeProxy = this.planes[0]
+    val buffer = planeProxy.buffer
+    val bytes = ByteArray(buffer.remaining())
+    buffer[bytes]
+    return BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+}
+
+fun Bitmap.toBase64(): String {
+    val byteArrayOutputStream = ByteArrayOutputStream()
+    this.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream)
+    val byteArray: ByteArray = byteArrayOutputStream.toByteArray()
+    return Base64.encodeToString(byteArray, Base64.NO_WRAP)
+}
+fun Bitmap.rotateImage(angle: Float): Bitmap? {
+    val matrix = Matrix()
+    matrix.postRotate(angle)
+    return  return Bitmap.createBitmap(
+        this, 0, 0, this.width, this.height,
+        matrix, true
+    )
 }

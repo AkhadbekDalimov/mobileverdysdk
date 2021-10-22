@@ -30,7 +30,7 @@ class MainDialogFragment : BottomSheetDialogFragment() {
 
         fun newInstance(config: VerdiUserConfig?): MainDialogFragment {
             val bundle = Bundle()
-            bundle.putSerializable(VERDIM_USER_CONFIG, config)
+//            bundle.putSerializable(VERDIM_USER_CONFIG, config)
             val dialog = MainDialogFragment()
             dialog.arguments = bundle
             return dialog
@@ -97,7 +97,7 @@ class MainDialogFragment : BottomSheetDialogFragment() {
         val transaction = childFragmentManager.beginTransaction()
 
         val bundle = Bundle()
-        bundle.putSerializable(VERDIM_USER_CONFIG, config)
+//        bundle.putSerializable(VERDIM_USER_CONFIG, config)
         val payment = RegisterFragment()
         payment.arguments = bundle
         transaction.add(R.id.bottomSheetContainer, payment, registerPage)

@@ -32,4 +32,7 @@
     <color name="colorNextIconDark">#D8D8D8</color>
 
 
+    <color name="icActive">#FFFFFFFF</color>
+    <color name="icFocused">#DDFFFFFF</color>
+    <color name="icPressed">#AAFFFFFF</color>
 </resources>

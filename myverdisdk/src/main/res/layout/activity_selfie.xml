@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cameraContainer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.camera.view.PreviewView
+        android:id="@+id/previewView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <uz.click.myverdisdk.util.GraphicOverlay
+            android:id="@+id/graphicOverlay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </androidx.camera.view.PreviewView>
+
+    <uz.click.myverdisdk.util.views.OverlayView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <ImageView
+        android:id="@+id/cameraSwitchButton"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="60dp"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/switch_camera_button_alt"
+        android:padding="8dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_switch"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent" />
+
+    <ImageButton
+        android:id="@+id/ibCameraCapture"
+        android:layout_width="92dp"
+        android:layout_height="92dp"
+        android:layout_marginBottom="48dp"
+        android:background="@drawable/ic_shutter"
+        android:contentDescription="@string/capture_button_alt"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+<!--    <LinearLayout-->
+<!--        android:id="@+id/llGifView"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:background="@android:color/white"-->
+<!--        android:orientation="vertical"-->
+<!--        android:weightSum="8">-->
+
+<!--        <com.airbnb.lottie.LottieAnimationView-->
+<!--            android:id="@+id/lottieSelfieAnim"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="0dp"-->
+<!--            android:layout_weight="7"-->
+<!--            app:lottie_autoPlay="true"-->
+<!--            app:lottie_rawRes="@raw/selfie" />-->
+
+<!--        <androidx.appcompat.widget.AppCompatButton-->
+<!--            android:id="@+id/btnOk"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_margin="22dp"-->
+<!--            android:padding="16dp"-->
+<!--            android:text="@string/ok" />-->
+<!--    </LinearLayout>-->
+
+</androidx.constraintlayout.widget.ConstraintLayout>

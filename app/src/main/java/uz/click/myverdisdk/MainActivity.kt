@@ -1,15 +1,14 @@
 package uz.click.myverdisdk
 
+import android.graphics.Bitmap
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import uz.click.myverdisdk.core.VerdiManager
+import android.widget.ImageView
 import uz.click.myverdisdk.core.VerdiUser
-import uz.click.myverdisdk.core.VerdiUserConfig
 import uz.click.myverdisdk.core.callbacks.VerdiScanListener
-import uz.click.myverdisdk.core.callbacks.VerdiUserListener
+import uz.click.myverdisdk.core.callbacks.VerdiSelfieListener
 import uz.click.myverdisdk.databinding.ActivityMainBinding
-import uz.click.myverdisdk.impl.ThemeOptions
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -18,18 +17,34 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.btnScanPassport.setOnClickListener {
-            VerdiUser.openPassportScanActivity(this, object : VerdiScanListener {
+            VerdiUser.openPassportScanActivity(this)
+            VerdiUser.config.scanListener = object : VerdiScanListener {
                 override fun onScanSuccess() {
                     Log.d("ScanTag", VerdiUser.config.toString())
                 }
-            })
+            }
         }
         binding.btnScanQr.setOnClickListener {
-            VerdiUser.openIdCardQrReaderActivity(this, object : VerdiScanListener {
+            VerdiUser.openIdCardQrReaderActivity(this)
+            VerdiUser.config.scanListener = object : VerdiScanListener {
                 override fun onScanSuccess() {
                     Log.d("ScanTag", VerdiUser.config.toString())
                 }
-            })
+            }
         }
+
+        binding.btnSelfie.setOnClickListener {
+            VerdiUser.openSelfieActivity(this)
+            VerdiUser.config.selfieListener = object : VerdiSelfieListener {
+                override fun onSelfieSuccess(selfie: Bitmap) {
+                    binding.ivResult.setImageBitmap(VerdiUser.config.imageFaceBase)
+                }
+            }
+        }
+    }
+
+    fun onSelfieSuccess() {
+//                    binding.ivResult.setImageBitmap(selfie)
+        Log.d("OnSelfieSucces", "Called")
     }
 }

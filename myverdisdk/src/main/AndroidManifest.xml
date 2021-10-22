@@ -12,7 +12,8 @@
     <application>
         <activity
             android:name=".impl.selfie.SelfieActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:theme="@style/Base.Theme.App"/>
         <activity
             android:name=".impl.scan.ScanActivity"
             android:exported="true"
