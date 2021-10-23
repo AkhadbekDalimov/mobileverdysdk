@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uz.digid.myverdi.mlkit.barcodescanner
+package uz.click.myverdisdk.util.mlkit.barcodescanner
 
 import android.content.Context
 import android.util.Log
@@ -24,49 +24,43 @@ import com.google.mlkit.vision.barcode.BarcodeScanner
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.common.InputImage
 import org.jmrtd.lds.icao.MRZInfo
-import uz.click.myverdisdk.util.GraphicOverlay
 import uz.click.myverdisdk.util.mlkit.VisionProcessorBase
-import uz.click.myverdisdk.util.mlkit.barcodescanner.BarcodeGraphic
 import uz.click.myverdisdk.util.mlkit.text.TextRecognitionProcessor
 
 /** Barcode Detector Demo.  */
-class BarcodeScannerProcessor(context: Context, private val resultListener: TextRecognitionProcessor.ResultListener) : VisionProcessorBase<List<Barcode>>(context) {
+class BarcodeScannerProcessor(context: Context, private val resultListener: TextRecognitionProcessor.ResultListener) :
+    VisionProcessorBase<List<Barcode>>(context) {
 
-  private val barcodeScanner: BarcodeScanner = BarcodeScanning.getClient()
+    private val barcodeScanner: BarcodeScanner = BarcodeScanning.getClient()
 
-  override fun stop() {
-    super.stop()
-    barcodeScanner.close()
-  }
-
-  override fun detectInImage(image: InputImage): Task<List<Barcode>> {
-    return barcodeScanner.process(image)
-  }
-
-  override fun onSuccess(barcodes: List<Barcode>, graphicOverlay: GraphicOverlay) {
-    if (barcodes.isEmpty()) {
-      Log.v(MANUAL_TESTING_LOG, "No barcode has been detected")
-    }
-    for (i in barcodes.indices) {
-      val barcode = barcodes[i]
-      graphicOverlay.add(BarcodeGraphic(graphicOverlay, barcode))
-
-      try {
-        val mrz = MRZInfo(barcode.rawValue)
-        resultListener.onSuccess(mrz)
-      }catch (e: Exception){
-        e.printStackTrace()
-      }
-
+    override fun stop() {
+        super.stop()
+        barcodeScanner.close()
     }
 
-  }
+    override fun detectInImage(image: InputImage): Task<List<Barcode>> {
+        return barcodeScanner.process(image)
+    }
 
-  override fun onFailure(e: Exception) {
-    Log.e(TAG, "Barcode detection failed $e")
-  }
+    override fun onSuccess(results: List<Barcode>) {
+        if (results.isEmpty()) {
+            Log.v(MANUAL_TESTING_LOG, "No barcode has been detected")
+        } else {
+            val barcode = results[0]
+            try {
+                val mrz = MRZInfo(barcode.rawValue)
+                resultListener.onSuccess(mrz)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
 
-  companion object {
-    private const val TAG = "BarcodeProcessor"
-  }
+    override fun onFailure(e: Exception) {
+        Log.e(TAG, "Barcode detection failed $e")
+    }
+
+    companion object {
+        private const val TAG = "BarcodeProcessor"
+    }
 }

@@ -24,13 +24,8 @@ object VerdiUser {
     }
 
     @[JvmStatic Keep]
-    fun openPassportScanActivity(activity: Activity) {
+    fun openDocumentScanActivity(activity: Activity) {
         activity.startActivity(ScanActivity.getInstance(activity))
-    }
-
-    @[JvmStatic Keep]
-    fun openIdCardQrReaderActivity(activity: Activity) {
-        activity.startActivity(ScanActivity.getInstance(activity, true))
     }
 
     @[JvmStatic Keep]

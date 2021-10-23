@@ -10,16 +10,10 @@
     tools:context=".MainActivity">
 
     <Button
-        android:id="@+id/btnScanPassport"
+        android:id="@+id/btnScanDocument"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Scan Passport" />
-
-    <Button
-        android:id="@+id/btnScanQr"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Scan QR" />
+        android:text="Scan Document" />
 
     <Button
         android:id="@+id/btnSelfie"

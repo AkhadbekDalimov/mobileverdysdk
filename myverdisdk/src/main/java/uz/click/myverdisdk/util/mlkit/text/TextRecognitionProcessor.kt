@@ -10,7 +10,6 @@ import com.google.mlkit.vision.text.TextRecognizer
 import com.google.mlkit.vision.text.TextRecognizerOptionsInterface
 import net.sf.scuba.data.Gender
 import org.jmrtd.lds.icao.MRZInfo
-import uz.click.myverdisdk.util.GraphicOverlay
 import uz.click.myverdisdk.util.mlkit.VisionProcessorBase
 import java.util.*
 import java.util.regex.Pattern
@@ -20,8 +19,10 @@ open class TextRecognitionProcessor(
     context: Context,
     textRecognizerOptions: TextRecognizerOptionsInterface,
     private val resultListener: ResultListener
-    ) : VisionProcessorBase<Text>(context) {
+) : VisionProcessorBase<Text>(context) {
     private val textRecognizer: TextRecognizer = TextRecognition.getClient(textRecognizerOptions)
+    private var isDetectPassport = false
+    private var isDetectIDCard = false
 
     //region ----- Exposed Methods -----
     override fun stop() {
@@ -32,7 +33,7 @@ open class TextRecognitionProcessor(
         return textRecognizer.process(image)
     }
 
-    override fun onSuccess(results: Text, graphicOverlay: GraphicOverlay) {
+    override fun onSuccess(results: Text) {
         var fullRead = ""
         val blocks = results.textBlocks
         for (i in blocks.indices) {
@@ -48,94 +49,50 @@ open class TextRecognitionProcessor(
             fullRead += "$temp-"
 
         }
-        fullRead = fullRead.toUpperCase(Locale.ROOT)
-        Log.d(TAG, "Read: $fullRead")
-        val patternLineOldPassportType = Pattern.compile(REGEX_OLD_PASSPORT)
-        val patternLineOldIDCardType = Pattern.compile(REGEX_OLD_ID_CARD_UZB)
-
-        val matcherLineOldPassportType = patternLineOldPassportType.matcher(fullRead)
-        val matcherLineOldIDCardType = patternLineOldIDCardType.matcher(fullRead)
-
+        fullRead = fullRead.uppercase(Locale.ENGLISH)
+        val patternLinePassportType = Pattern.compile(REGEX_OLD_PASSPORT_UZB)
+        val matcherLineOldPassportType = patternLinePassportType.matcher(fullRead)
         if (matcherLineOldPassportType.find()) {
-            resultListener.onDetect(true)
-            if (matcherLineOldPassportType.group(3) == "UZB") {
-                val patternLineOldPassportTypeUzb = Pattern.compile(REGEX_OLD_PASSPORT_UZB)
-                val matcherLineOldPassportTypeUzb = patternLineOldPassportTypeUzb.matcher(fullRead)
-                if (matcherLineOldPassportTypeUzb.find()) {
-                    val serial = matcherLineOldPassportTypeUzb.group(1) as String
-                    val documentNumber = cleanDate(matcherLineOldPassportTypeUzb.group(2))
-                    val dateOfBirthDay = cleanDate(matcherLineOldPassportTypeUzb.group(5))
-                    val expirationDate = cleanDate(matcherLineOldPassportTypeUzb.group(8))
-                    val personalNumber = cleanDate(matcherLineOldPassportTypeUzb.group(10))
-                    val mrzInfo = createDummyMrz(
-                        "P",
-                        serial + documentNumber,
-                        dateOfBirthDay,
-                        expirationDate,
-                        personalNumber
-                    )
-                    Log.d(
-                        TAG,
-                        "ReadMRZ: ${mrzInfo.documentNumber} ${mrzInfo.dateOfBirth} ${mrzInfo.dateOfExpiry}"
-                    )
-                    onSuccess(mrzInfo)
-
-                }
-            } else {
-                var documentNumber = matcherLineOldPassportType.group(1) as String
-                val dateOfBirthDay = cleanDate(matcherLineOldPassportType.group(4))
-                val expirationDate = cleanDate(matcherLineOldPassportType.group(7))
-                //As O and 0 and really similar most of the countries just removed them from the passport, so for accuracy I am formatting it
-                documentNumber = documentNumber.replace("O".toRegex(), "0")
-                val mrzInfo =
-                    createDummyMrz("P", documentNumber, dateOfBirthDay, expirationDate, "")
-                onSuccess(mrzInfo)
-
+            if (!isDetectPassport) {
+                resultListener.onDetectPassport(true)
+                isDetectPassport = true
+                isDetectIDCard = false
             }
+            val mrz = fullRead.substringAfter("P<UZB", "<<").substringBeforeLast("<<<")
+            val lastName = mrz.substringBefore("<<").replace("<", "")
+            val firstName = mrz.substringAfter("<<").replace("<", "")
 
-        } else if (matcherLineOldIDCardType.find()) {
-            resultListener.onDetect(true)
-            if (matcherLineOldIDCardType.group(2) == "UZB") {
-                val patternLineOldIDCardTypes = Pattern.compile(REGEX_OLD_ID_CARD_UZB)
-                val matcherLineOldIDCardTypeUzb = patternLineOldIDCardTypes.matcher(fullRead)
-                if (matcherLineOldIDCardTypeUzb.find()) {
-                    var documentNumber = matcherLineOldIDCardTypeUzb.group(3) as String
-                    val documentType = matcherLineOldIDCardTypeUzb.group(1) as String
-                    val dateOfBirthDay = cleanDate(matcherLineOldIDCardTypeUzb.group(7))
-                    val expirationDate = cleanDate(matcherLineOldIDCardTypeUzb.group(10))
-                    val personalNumber = cleanDate(matcherLineOldIDCardTypeUzb.group(5))
-                    documentNumber = documentNumber.replace("O".toRegex(), "0")
-                    val mrzInfo = createDummyMrz(
-                        "V",
-                        documentNumber,
-                        dateOfBirthDay,
-                        expirationDate,
-                        personalNumber
-                    )
-                    Log.d(
-                        TAG,
-                        "ReadMRZ: ${mrzInfo.documentNumber} ${mrzInfo.dateOfBirth} ${mrzInfo.dateOfExpiry}"
-                    )
-                    onSuccess(mrzInfo)
+            val serial = matcherLineOldPassportType.group(1) as String
+            val documentNumber = cleanDate(matcherLineOldPassportType.group(2))
+            val dateOfBirthDay = cleanDate(matcherLineOldPassportType.group(5))
+            val expirationDate = cleanDate(matcherLineOldPassportType.group(8))
+            val personalNumber = cleanDate(matcherLineOldPassportType.group(10))
+            val mrzInfo = createDummyMrz(
+                serial + documentNumber,
+                dateOfBirthDay,
+                expirationDate,
+                personalNumber,
+                lastName,
+                firstName
+            )
+            onSuccessMrz(mrzInfo)
+
+        } else {
+            val patternLineOldIDCardTypes = Pattern.compile(REGEX_OLD_ID_CARD_UZB)
+            val matcherLineOldIDCardTypeUzb = patternLineOldIDCardTypes.matcher(fullRead)
+            if (matcherLineOldIDCardTypeUzb.find()) {
+                if (!isDetectIDCard) {
+                    resultListener.onDetectIdCard(true)
+                    isDetectPassport = false
+                    isDetectIDCard = true
                 }
             }
         }
     }
 
-    private fun cleanDate(date: String?): String? {
-        var tempDate = date
-        tempDate = tempDate?.replace("I".toRegex(), "1")
-        tempDate = tempDate?.replace("L".toRegex(), "1")
-        tempDate = tempDate?.replace("D".toRegex(), "0")
-        tempDate = tempDate?.replace("O".toRegex(), "0")
-        tempDate = tempDate?.replace("S".toRegex(), "5")
-        tempDate = tempDate?.replace("G".toRegex(), "6")
-        return tempDate
-    }
-
     val listMRZ = ArrayList<MRZInfo>()
     var max: Map.Entry<MRZInfo, List<MRZInfo>>? = null
-    private fun onSuccess(mrzInfo: MRZInfo) {
+    private fun onSuccessMrz(mrzInfo: MRZInfo) {
         listMRZ.add(mrzInfo)
         when (listMRZ.size) {
             3 -> {
@@ -161,24 +118,38 @@ open class TextRecognitionProcessor(
                     max = listMRZ.groupBy { it }.entries.maxByOrNull { it.value.size }
                     if (max?.value?.size!! >= 10) {
                         resultListener.onSuccess(max!!.value.getOrNull(0))
+                    } else {
+                        listMRZ.clear()
                     }
                 }
             }
         }
     }
 
+    private fun cleanDate(date: String?): String? {
+        var tempDate = date
+        tempDate = tempDate?.replace("I".toRegex(), "1")
+        tempDate = tempDate?.replace("L".toRegex(), "1")
+        tempDate = tempDate?.replace("D".toRegex(), "0")
+        tempDate = tempDate?.replace("O".toRegex(), "0")
+        tempDate = tempDate?.replace("S".toRegex(), "5")
+        tempDate = tempDate?.replace("G".toRegex(), "6")
+        return tempDate
+    }
+
     private fun createDummyMrz(
-        documentType: String?,
         documentNumber: String?,
         dateOfBirthDay: String?,
         expirationDate: String?,
-        personalNumber: String?
+        personalNumber: String?,
+        lastName: String?,
+        firstName: String?
     ): MRZInfo {
         return MRZInfo(
-            documentType,
+            "P",
             "UZB",
-            "DUMMY",
-            "DUMMY",
+            lastName,
+            firstName,
             documentNumber,
             "UZB",
             dateOfBirthDay,
@@ -191,13 +162,12 @@ open class TextRecognitionProcessor(
     interface ResultListener {
         fun onSuccess(mrzInfo: MRZInfo?)
         fun onError(exp: Exception?)
-        fun onDetect(results: Boolean)
+        fun onDetectPassport(results: Boolean)
+        fun onDetectIdCard(isDrCode: Boolean)
     }
 
     companion object {
         private val TAG = TextRecognitionProcessor::class.java.name
-        private const val REGEX_OLD_PASSPORT =
-            "(?<documentNumber>[A-Z0-9<]{9})(?<checkDigitDocumentNumber>[0-9ILDSOG]{1})(?<nationality>[A-Z<]{3})(?<dateOfBirth>[0-9ILDSOG]{6})(?<checkDigitDateOfBirth>[0-9ILDSOG]{1})(?<sex>[FM<]){1}(?<expirationDate>[0-9ILDSOG]{6})(?<checkDigitExpiration>[0-9ILDSOG]{1})"
         private const val REGEX_OLD_ID_CARD_UZB: String =
             "(?<documentType>[A-Z<]{2})(?<nationality>[A-Z<]{3})(?<documentNumber>[A-Z0-9<]{9})(?<number>[A-Z0-9<])(?<identificationNumber>[0-9ILDSOG]{14})(?<nn>[-<]{2})(?<dateOfBirth>[0-9ILDSOG]{6})(?<checkDigitDateOfBirth>[0-9ILDSOG]{1})(?<sex>[FM<]){1}(?<expirationDate>[0-9ILDSOG]{6})(?<checkDigitExpiration>[0-9ILDSOG]{1})"
         private const val REGEX_OLD_PASSPORT_UZB =
@@ -205,9 +175,8 @@ open class TextRecognitionProcessor(
     }
 
     override fun onFailure(e: Exception) {
-        resultListener.onDetect(false)
+        resultListener.onDetectPassport(false)
+        resultListener.onDetectIdCard(false)
         Log.w(TAG, "Text detection failed.$e")
     }
-
-
 }

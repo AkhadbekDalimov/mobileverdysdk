@@ -2,12 +2,13 @@ package uz.click.myverdisdk.impl.scan
 
 import android.app.Activity
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.CompoundButton
 import android.widget.ImageView
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
@@ -19,25 +20,20 @@ import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import org.jmrtd.lds.icao.MRZInfo
 import uz.click.myverdisdk.R
 import uz.click.myverdisdk.core.VerdiUser
-import uz.click.myverdisdk.core.callbacks.VerdiScanListener
-import uz.click.myverdisdk.core.callbacks.VerdiUserListener
 import uz.click.myverdisdk.model.DocType
 import uz.click.myverdisdk.util.DateUtil
-import uz.click.myverdisdk.util.GraphicOverlay
 import uz.click.myverdisdk.util.PublicMethods
 import uz.click.myverdisdk.util.mlkit.VisionImageProcessor
+import uz.click.myverdisdk.util.mlkit.barcodescanner.BarcodeScannerProcessor
 import uz.click.myverdisdk.util.mlkit.text.TextRecognitionProcessor
 import uz.click.myverdisdk.util.views.OverlayViewQrCode
-import uz.digid.myverdi.mlkit.barcodescanner.BarcodeScannerProcessor
 import java.util.concurrent.ExecutionException
 
 class ScanActivity : AppCompatActivity(),
     ActivityCompat.OnRequestPermissionsResultCallback,
     TextRecognitionProcessor.ResultListener,
-    CompoundButton.OnCheckedChangeListener
-{
+    CompoundButton.OnCheckedChangeListener {
     private var previewView: PreviewView? = null
-    private var graphicOverlay: GraphicOverlay? = null
     private var cameraProvider: ProcessCameraProvider? = null
     private var preview: Preview? = null
     private var imageAnalysis: ImageAnalysis? = null
@@ -53,11 +49,8 @@ class ScanActivity : AppCompatActivity(),
         const val VERDI_LISTENER = "verdiListener"
         fun getInstance(
             activity: Activity,
-            isQrCode: Boolean = false
         ): Intent {
-            return Intent(activity, ScanActivity::class.java).apply {
-                putExtra(IS_QR_CODE, isQrCode)
-            }
+            return Intent(activity, ScanActivity::class.java)
         }
     }
 
@@ -71,10 +64,7 @@ class ScanActivity : AppCompatActivity(),
         }
         getCameraProvider()
 
-
-        isQrCode = intent.extras?.getBoolean(IS_QR_CODE) ?: false
-        previewView = findViewById<PreviewView>(R.id.previewView)
-        graphicOverlay = findViewById<GraphicOverlay>(R.id.graphicOverlay)
+        previewView = findViewById(R.id.previewView)
         findViewById<ImageView>(R.id.ivBack).setOnClickListener { finish() }
         if (isQrCode) {
             findViewById<OverlayViewQrCode>(R.id.qrCodeView).visibility = View.VISIBLE
@@ -85,7 +75,6 @@ class ScanActivity : AppCompatActivity(),
         }
 
     }
-
 
     private fun getCameraProvider() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
@@ -197,32 +186,13 @@ class ScanActivity : AppCompatActivity(),
         imageAnalysis?.setAnalyzer(
             ContextCompat.getMainExecutor(this)
         ) { imageProxy: ImageProxy ->
-            if (needUpdateGraphicOverlayImageSourceInfo) {
-                val isImageFlipped =
-                    lensFacing == CameraSelector.LENS_FACING_FRONT
-                val rotationDegrees =
-                    imageProxy.imageInfo.rotationDegrees
-                if (rotationDegrees == 0 || rotationDegrees == 180) {
-                    graphicOverlay!!.setImageSourceInfo(
-                        imageProxy.width, imageProxy.height, isImageFlipped
-                    )
-                } else {
-                    graphicOverlay!!.setImageSourceInfo(
-                        imageProxy.height, imageProxy.width, isImageFlipped
-                    )
-                }
-                needUpdateGraphicOverlayImageSourceInfo = false
-            }
             try {
-                imageProcessor!!.processImageProxy(imageProxy, graphicOverlay)
+                imageProcessor!!.processImageProxyVerticalText(imageProxy)
             } catch (e: MlKitException) {
                 Log.e(TAG, "Failed to process image. Error: " + e.localizedMessage)
             }
         }
-        cameraProvider!!.bindToLifecycle( /* lifecycleOwner= */this,
-            cameraSelector!!,
-            imageAnalysis
-        )
+        cameraProvider!!.bindToLifecycle(this, cameraSelector!!, imageAnalysis)
         try {
             val camera = cameraProvider!!.bindToLifecycle(this, cameraSelector!!, preview)
             findViewById<ImageView>(R.id.ivFlashButton).setOnClickListener {
@@ -238,7 +208,6 @@ class ScanActivity : AppCompatActivity(),
             Log.e(TAG, "Use case binding failed", exc)
         }
     }
-
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -273,7 +242,14 @@ class ScanActivity : AppCompatActivity(),
     override fun onError(exp: Exception?) {
     }
 
-    override fun onDetect(results: Boolean) {
+    override fun onDetectPassport(results: Boolean) {
+        Toast.makeText(this, "onDetectPassport",Toast.LENGTH_LONG).show()
+    }
+
+    override fun onDetectIdCard(results: Boolean) {
+        isQrCode = true
+        bindAnalysisUseCase()
+        Toast.makeText(this, "onDetectIdCard",Toast.LENGTH_LONG).show()
     }
 
 }

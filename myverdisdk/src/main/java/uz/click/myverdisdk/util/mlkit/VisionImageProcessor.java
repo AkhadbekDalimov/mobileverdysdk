@@ -16,7 +16,6 @@
 
 package uz.click.myverdisdk.util.mlkit;
 
-import android.graphics.Bitmap;
 import android.os.Build;
 
 import androidx.annotation.RequiresApi;
@@ -24,26 +23,18 @@ import androidx.camera.core.ImageProxy;
 
 import com.google.mlkit.common.MlKitException;
 
-import java.nio.ByteBuffer;
-
-import uz.click.myverdisdk.util.GraphicOverlay;
-import uz.click.myverdisdk.util.camera.FrameMetadata;
-
-/** An interface to process the images with different vision detectors and custom image models. */
+/**
+ * An interface to process the images with different vision detectors and custom image models.
+ */
 public interface VisionImageProcessor {
+    /**
+     * Processes ImageProxy image data, e.g. used for CameraX live preview case.
+     */
+    @RequiresApi(Build.VERSION_CODES.KITKAT)
+    void processImageProxyVerticalText(ImageProxy image) throws MlKitException;
 
-  /** Processes a bitmap image. */
-  void processBitmap(Bitmap bitmap, GraphicOverlay graphicOverlay);
-
-  /** Processes ByteBuffer image data, e.g. used for Camera1 live preview case. */
-  void processByteBuffer(
-          ByteBuffer data, FrameMetadata frameMetadata, GraphicOverlay graphicOverlay)
-          throws MlKitException;
-
-  /** Processes ImageProxy image data, e.g. used for CameraX live preview case. */
-  @RequiresApi(Build.VERSION_CODES.KITKAT)
-  void processImageProxy(ImageProxy image, GraphicOverlay graphicOverlay) throws MlKitException;
-
-  /** Stops the underlying machine learning model and release resources. */
-  void stop();
+    /**
+     * Stops the underlying machine learning model and release resources.
+     */
+    void stop();
 }
