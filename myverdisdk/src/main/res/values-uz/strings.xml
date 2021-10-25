@@ -2,4 +2,10 @@
 <resources>
     <string name="mrz1"><![CDATA[P<SURNAME<<NAME<<<<<<<<<<<<<<<<<<<<<<<<<<<]]></string>
     <string name="mrz2"><![CDATA[ AB12345678UZB012345M311231012345678901234567]]></string>
+    <string name="confirmation_code_error" >Sms kod no\\\'g\\\'ri</string>
+    <string name="server_error" >Serverda xatolik yuz berdi</string>
+    <string name="unknown_error" >Noma\\\'lum xatolik</string>
+    <string name="number_of_attempts_error" >SMS-tekshirish kodini kiritish bo\\\'yicha urinishlar soni oshib ketdi</string>
+    <string name="capture_button_alt">Rasm</string>
+    <string name="ok">Ok</string>
 </resources>

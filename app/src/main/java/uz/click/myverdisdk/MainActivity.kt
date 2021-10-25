@@ -4,11 +4,15 @@ import android.graphics.Bitmap
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.ImageView
+import android.widget.Toast
+import uz.click.myverdisdk.core.VerdiManager
 import uz.click.myverdisdk.core.VerdiUser
+import uz.click.myverdisdk.core.callbacks.ResponseListener
 import uz.click.myverdisdk.core.callbacks.VerdiScanListener
 import uz.click.myverdisdk.core.callbacks.VerdiSelfieListener
 import uz.click.myverdisdk.databinding.ActivityMainBinding
+import uz.click.myverdisdk.model.request.ModelPersonAnswere
+import uz.click.myverdisdk.model.response.AppIdResponse
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,10 +45,30 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-    }
+        binding.btnCheckAppId.setOnClickListener {
+            val verdiManager = VerdiManager()
+            verdiManager.checkAppId(this,object : ResponseListener<AppIdResponse> {
+                override fun onFailure(e: Exception) {
+                    Toast.makeText(this@MainActivity, e.message, Toast.LENGTH_LONG).show()
+                }
 
-    fun onSelfieSuccess() {
-//                    binding.ivResult.setImageBitmap(selfie)
-        Log.d("OnSelfieSucces", "Called")
+                override fun onSuccess(response: AppIdResponse) {
+                    binding.tvResponse.text = response.message
+                }
+            })
+        }
+
+        binding.btnRegister.setOnClickListener {
+            val verdiManager = VerdiManager()
+            verdiManager.registerPerson(this,object : ResponseListener<ModelPersonAnswere> {
+                override fun onFailure(e: Exception) {
+                    Toast.makeText(this@MainActivity, e.cause?.message.toString(), Toast.LENGTH_LONG).show()
+                }
+
+                override fun onSuccess(response: ModelPersonAnswere) {
+                    binding.tvResponse.text = response.message
+                }
+            })
+        }
     }
 }
