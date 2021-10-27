@@ -11,8 +11,7 @@
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:indeterminate="true"
-        android:visibility="gone" />
+        android:indeterminate="true" />
 
     <TextView
         android:id="@+id/textViewNfcTitle"
@@ -25,6 +24,7 @@
         android:gravity="center"
         android:text="Put your phone on your passport or ID and don\'t move it"
         android:textSize="14dp" />
+
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/animation_view"

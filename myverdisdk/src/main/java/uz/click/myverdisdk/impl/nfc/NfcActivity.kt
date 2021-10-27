@@ -11,6 +11,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.airbnb.lottie.LottieAnimationView
@@ -50,8 +51,8 @@ class NfcActivity : AppCompatActivity() {
         registerReceiver(mReceiver, filter)
 
         //todo nfc
-        viewModel.birthDate = "27.07.1998"
-        viewModel.expiryDate = "22.05.2025"
+        viewModel.birthDate = "980727"
+        viewModel.expiryDate = "220525"
         viewModel.serialNumber = "AA9798910"
 
         animationView = findViewById(R.id.animation_view)
@@ -66,6 +67,7 @@ class NfcActivity : AppCompatActivity() {
 
 
         viewModel.errorRead.observe(this, {
+            Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show()
             findViewById<View>(R.id.progressBar)?.visibility = View.GONE
             showDialog()
         })
@@ -94,9 +96,9 @@ class NfcActivity : AppCompatActivity() {
         })
     }
 
-    private fun showDialog() {
-        val dialog = ErrorNfcDialog(this)
-        dialog.show()
+    private fun showDialog() {//todo
+//        val dialog = ErrorNfcDialog(this)
+//        dialog.show()
     }
 
     private fun showAnimation() {
