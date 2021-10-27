@@ -1,6 +1,13 @@
-package uz.click.myverdisdk.data.model.response
+package uz.click.myverdisdk.model.response
 
 data class AppIdResponse(
-    var success: Boolean = false,
-    var reqGUID: String
+    val code: Int,
+    val message: String = "Successful",
+    val response: AppIdResponseMessage? = AppIdResponseMessage()
+
+)
+
+data class AppIdResponseMessage(
+    var message: Boolean = false,
+    var reqGUID: String = ""
 )

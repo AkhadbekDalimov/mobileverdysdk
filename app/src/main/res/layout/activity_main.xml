@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
     android:background="@color/white"
+    android:gravity="center"
     android:orientation="vertical"
     tools:context=".MainActivity">
 
@@ -21,6 +21,18 @@
         android:layout_height="wrap_content"
         android:text="Take a selfie" />
 
+    <Button
+        android:id="@+id/btnCheckAppId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Check App Id" />
+
+    <Button
+        android:id="@+id/btnRegister"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Register" />
+
 
     <Button
         android:id="@+id/btnNfc"
@@ -34,6 +46,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        tools:src="@mipmap/ic_launcher"/>
+        tools:src="@mipmap/ic_launcher" />
+
+    <TextView
+        android:id="@+id/tvResponse"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Beginning"
+        android:textColor="@color/black"
+        android:textSize="16sp" />
 
 </LinearLayout>

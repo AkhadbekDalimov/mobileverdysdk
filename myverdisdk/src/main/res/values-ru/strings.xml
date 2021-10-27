@@ -2,4 +2,10 @@
 <resources>
     <string name="mrz1"><![CDATA[P<SURNAME<<NAME<<<<<<<<<<<<<<<<<<<<<<<<<<<]]></string>
     <string name="mrz2"><![CDATA[ AB12345678UZB012345M311231012345678901234567]]></string>
+    <string name="confirmation_code_error" >Неверный смс код</string>
+    <string name="server_error" >Ошибка сервера</string>
+    <string name="unknown_error" >Неизвестная ошибка</string>
+    <string name="number_of_attempts_error" >Превышено количество попыток ввода смс-кода подтверждения</string>
+    <string name="capture_button_alt">"Снимок "</string>
+    <string name="ok">Ok</string>
 </resources>

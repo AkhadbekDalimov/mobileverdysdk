@@ -27,6 +27,7 @@ data class VerdiUserConfig(
     var docType: String,
     @Nullable
     var imageFaceBase: Bitmap?,
+    var base64Image: String? = "",
     var scanListener: VerdiScanListener?,
     var selfieListener: VerdiSelfieListener?
 ) : Parcelable {
@@ -41,6 +42,7 @@ data class VerdiUserConfig(
         private var personalNumber: String = ""
         private var docType: String = DocType.PASSPORT
         private var imageFaceBase: Bitmap? = null
+        private var base64Image: String? = null
         private var scanListener: VerdiScanListener? = null
         private var selfieListener: VerdiSelfieListener? = null
 
@@ -53,14 +55,16 @@ data class VerdiUserConfig(
         fun birthDate(birthDate: String) = apply { this.birthDate = birthDate }
         fun personalNumber(personalNumber: String) = apply { this.personalNumber = personalNumber }
         fun docType(docType: String) = apply { this.docType = docType }
+
+        @Nullable
+        fun base64Image(base64Image: String?) = apply { this.base64Image = base64Image }
+        fun imageFaceBase(imageFaceBase: Bitmap?) = apply { this.imageFaceBase = imageFaceBase }
         fun scanListener(scanListener: VerdiScanListener) =
             apply { this.scanListener = scanListener }
 
         fun selfieListener(selfieListener: VerdiSelfieListener) =
             apply { this.selfieListener = selfieListener }
 
-        @Nullable
-        fun imageFaceBase(imageFaceBase: Bitmap?) = apply { this.imageFaceBase = imageFaceBase }
         fun build(): VerdiUserConfig {
             return VerdiUserConfig(
                 appId ?: throw AppIdEmptyException(),
@@ -73,6 +77,7 @@ data class VerdiUserConfig(
                 personalNumber,
                 personalNumber,
                 imageFaceBase,
+                base64Image,
                 scanListener,
                 selfieListener
             )

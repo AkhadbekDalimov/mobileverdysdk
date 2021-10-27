@@ -4,10 +4,14 @@
 
     <string name="mrz1"><![CDATA[P<SURNAME<<NAME<<<<<<<<<<<<<<<<<<<<<<<<<<<]]></string>
     <string name="mrz2"><![CDATA[ AB12345678UZB012345M311231012345678901234567]]></string>
-    <string name="Surname">SURNAME</string>
-    <string name="Name">NAME</string>
-    <string name="Nationality">NATIONALITY</string>
-    <string name="switch_camera_button_alt"><![CDATA["   <string name=\"switch_camera_button_alt\">Переключить камеру</string>"]]></string>
-    <string name="capture_button_alt">Снимок</string>
+    <string name="Surname" translatable="false">SURNAME</string>
+    <string name="Name" translatable="false">NAME</string>
+    <string name="Nationality" translatable="false">NATIONALITY</string>
+    <string name="switch_camera_button_alt" translatable="false"><![CDATA["   <string name=\"switch_camera_button_alt\">Переключить камеру</string>"]]></string>
+    <string name="capture_button_alt">Snapshot</string>
     <string name="ok">Ok</string>
+    <string name="confirmation_code_error" >Invalid sms code</string>
+    <string name="server_error" >Server issue</string>
+    <string name="unknown_error" >Unknown error</string>
+    <string name="number_of_attempts_error" >Number of attempts to enter SMS verification code exceeded</string>
 </resources>
