@@ -2,10 +2,7 @@ package uz.click.myverdisdk.core
 
 import android.app.Activity
 import androidx.annotation.Keep
-import uz.click.myverdisdk.core.callbacks.VerdiScanListener
-import uz.click.myverdisdk.core.callbacks.VerdiSelfieListener
-import uz.click.myverdisdk.core.callbacks.VerdiUserListener
-import uz.click.myverdisdk.impl.MainDialogFragment
+import uz.click.myverdisdk.impl.nfc.NfcActivity
 import uz.click.myverdisdk.impl.scan.ScanActivity
 import uz.click.myverdisdk.impl.selfie.SelfieActivity
 
@@ -33,7 +30,8 @@ object VerdiUser {
         activity.startActivity(SelfieActivity.getInstance(activity))
     }
 
-
-
-
+    @[JvmStatic Keep]
+    fun openNfcScanActivity(activity: Activity) {
+        activity.startActivity(NfcActivity.getInstance(activity))
+    }
 }

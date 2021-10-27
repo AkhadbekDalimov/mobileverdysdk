@@ -40,29 +40,29 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 
-<!--    <LinearLayout-->
-<!--        android:id="@+id/llGifView"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        android:background="@android:color/white"-->
-<!--        android:orientation="vertical"-->
-<!--        android:weightSum="8">-->
+    <!--    <LinearLayout-->
+    <!--        android:id="@+id/llGifView"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="match_parent"-->
+    <!--        android:background="@android:color/white"-->
+    <!--        android:orientation="vertical"-->
+    <!--        android:weightSum="8">-->
 
-<!--        <com.airbnb.lottie.LottieAnimationView-->
-<!--            android:id="@+id/lottieSelfieAnim"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="0dp"-->
-<!--            android:layout_weight="7"-->
-<!--            app:lottie_autoPlay="true"-->
-<!--            app:lottie_rawRes="@raw/selfie" />-->
+    <!--        <com.airbnb.lottie.LottieAnimationView-->
+    <!--            android:id="@+id/lottieSelfieAnim"-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="0dp"-->
+    <!--            android:layout_weight="7"-->
+    <!--            app:lottie_autoPlay="true"-->
+    <!--            app:lottie_rawRes="@raw/selfie" />-->
 
-<!--        <androidx.appcompat.widget.AppCompatButton-->
-<!--            android:id="@+id/btnOk"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_margin="22dp"-->
-<!--            android:padding="16dp"-->
-<!--            android:text="@string/ok" />-->
-<!--    </LinearLayout>-->
+    <!--        <androidx.appcompat.widget.AppCompatButton-->
+    <!--            android:id="@+id/btnOk"-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_margin="22dp"-->
+    <!--            android:padding="16dp"-->
+    <!--            android:text="@string/ok" />-->
+    <!--    </LinearLayout>-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

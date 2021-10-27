@@ -18,6 +18,10 @@
             android:name=".impl.scan.ScanActivity"
             android:exported="true"
             android:theme="@style/Base.Theme.App" />
+        <activity
+            android:name=".impl.nfc.NfcActivity"
+            android:exported="true"
+            android:theme="@style/Base.Theme.App" />
     </application>
 
 </manifest>

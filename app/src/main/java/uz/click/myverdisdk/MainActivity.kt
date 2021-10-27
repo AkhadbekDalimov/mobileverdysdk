@@ -20,16 +20,8 @@ class MainActivity : AppCompatActivity() {
         val binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.btnScanPassport.setOnClickListener {
-            VerdiUser.openPassportScanActivity(this)
-            VerdiUser.config.scanListener = object : VerdiScanListener {
-                override fun onScanSuccess() {
-                    Log.d("ScanTag", VerdiUser.config.toString())
-                }
-            }
-        }
-        binding.btnScanQr.setOnClickListener {
-            VerdiUser.openIdCardQrReaderActivity(this)
+        binding.btnScanDocument.setOnClickListener {
+            VerdiUser.openDocumentScanActivity(this)
             VerdiUser.config.scanListener = object : VerdiScanListener {
                 override fun onScanSuccess() {
                     Log.d("ScanTag", VerdiUser.config.toString())
@@ -45,6 +37,16 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+
+        binding.btnNfc.setOnClickListener {
+            VerdiUser.openNfcScanActivity(this)
+            VerdiUser.config.scanListener = object : VerdiScanListener {
+                override fun onScanSuccess() {
+                    Log.d("NfcTag", VerdiUser.config.toString())
+                }
+            }
+        }
+
         binding.btnCheckAppId.setOnClickListener {
             val verdiManager = VerdiManager()
             verdiManager.checkAppId(this,object : ResponseListener<AppIdResponse> {

@@ -83,6 +83,9 @@ dependencies {
     compileOnly 'io.reactivex.rxjava2:rxjava:2.2.3'
 
     implementation 'org.jmrtd:jmrtd:0.7.18'
+
+    implementation 'edu.ucar:jj2000:5.2'
+    implementation 'com.github.mhshams:jnbis:1.1.0'
 }
 afterEvaluate {
     publishing {

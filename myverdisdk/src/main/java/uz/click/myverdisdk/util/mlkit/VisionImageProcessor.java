@@ -27,14 +27,14 @@ import com.google.mlkit.common.MlKitException;
  * An interface to process the images with different vision detectors and custom image models.
  */
 public interface VisionImageProcessor {
-    /**
-     * Processes ImageProxy image data, e.g. used for CameraX live preview case.
-     */
-    @RequiresApi(Build.VERSION_CODES.KITKAT)
-    void processImageProxyVerticalText(ImageProxy image) throws MlKitException;
+  /**
+   * Processes ImageProxy image data, e.g. used for CameraX live preview case.
+   */
+  @RequiresApi(Build.VERSION_CODES.KITKAT)
+  void processImageProxyVerticalText(ImageProxy image) throws MlKitException;
 
-    /**
-     * Stops the underlying machine learning model and release resources.
-     */
-    void stop();
+  /**
+   * Stops the underlying machine learning model and release resources.
+   */
+  void stop();
 }

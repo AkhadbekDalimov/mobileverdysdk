@@ -14,4 +14,10 @@
     <string name="server_error" >Server issue</string>
     <string name="unknown_error" >Unknown error</string>
     <string name="number_of_attempts_error" >Number of attempts to enter SMS verification code exceeded</string>
+    <string name="nfc">NFC:</string>
+    <string name="error_nfc">The document could not be recognized, \ n please try again</string>
+    <string name="try_one">Try again</string>
+    <string name="next">Next</string>
+    <string name="nfc_is_not_enabled">"NFC is available, but not enabled"</string>
+    <string name="nfc_is_not_available">NFC is not available on device</string>
 </resources>

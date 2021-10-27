@@ -29,38 +29,38 @@ import uz.click.myverdisdk.util.mlkit.text.TextRecognitionProcessor
 
 /** Barcode Detector Demo.  */
 class BarcodeScannerProcessor(context: Context, private val resultListener: TextRecognitionProcessor.ResultListener) :
-    VisionProcessorBase<List<Barcode>>(context) {
+  VisionProcessorBase<List<Barcode>>(context) {
 
-    private val barcodeScanner: BarcodeScanner = BarcodeScanning.getClient()
+  private val barcodeScanner: BarcodeScanner = BarcodeScanning.getClient()
 
-    override fun stop() {
-        super.stop()
-        barcodeScanner.close()
+  override fun stop() {
+    super.stop()
+    barcodeScanner.close()
+  }
+
+  override fun detectInImage(image: InputImage): Task<List<Barcode>> {
+    return barcodeScanner.process(image)
+  }
+
+  override fun onSuccess(results: List<Barcode>) {
+    if (results.isEmpty()) {
+      Log.v(MANUAL_TESTING_LOG, "No barcode has been detected")
+    } else {
+      val barcode = results[0]
+      try {
+        val mrz = MRZInfo(barcode.rawValue)
+        resultListener.onSuccess(mrz)
+      } catch (e: Exception) {
+        e.printStackTrace()
+      }
     }
+  }
 
-    override fun detectInImage(image: InputImage): Task<List<Barcode>> {
-        return barcodeScanner.process(image)
-    }
+  override fun onFailure(e: Exception) {
+    Log.e(TAG, "Barcode detection failed $e")
+  }
 
-    override fun onSuccess(results: List<Barcode>) {
-        if (results.isEmpty()) {
-            Log.v(MANUAL_TESTING_LOG, "No barcode has been detected")
-        } else {
-            val barcode = results[0]
-            try {
-                val mrz = MRZInfo(barcode.rawValue)
-                resultListener.onSuccess(mrz)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-    }
-
-    override fun onFailure(e: Exception) {
-        Log.e(TAG, "Barcode detection failed $e")
-    }
-
-    companion object {
-        private const val TAG = "BarcodeProcessor"
-    }
+  companion object {
+    private const val TAG = "BarcodeProcessor"
+  }
 }
