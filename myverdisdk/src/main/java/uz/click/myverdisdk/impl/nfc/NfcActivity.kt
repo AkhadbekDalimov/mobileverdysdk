@@ -32,8 +32,22 @@ class NfcActivity : AppCompatActivity() {
     var adapter: NfcAdapter? = null
 
     companion object {
-        fun getInstance(activity: Activity): Intent {
-            return Intent(activity, NfcActivity::class.java)
+
+        val SERIAL_NUMBER = "SERIAL_NUMBER"
+        val BIRTH_DATE = "BIRTH_DATE"
+        val EXPIRY_DATE = "EXPIRY_DATE"
+
+        fun getInstance(
+            activity: Activity,
+            serialNumber: String,
+            birthDate: String,
+            expiryDate: String
+        ): Intent {
+            val intent = Intent(activity, NfcActivity::class.java)
+            intent.putExtra(SERIAL_NUMBER, serialNumber)
+            intent.putExtra(BIRTH_DATE, birthDate)
+            intent.putExtra(EXPIRY_DATE, expiryDate)
+            return intent
         }
     }
 
@@ -50,15 +64,17 @@ class NfcActivity : AppCompatActivity() {
         val filter = IntentFilter(NfcAdapter.ACTION_ADAPTER_STATE_CHANGED)
         registerReceiver(mReceiver, filter)
 
-        //todo nfc
-        viewModel.birthDate = "980727"
-        viewModel.expiryDate = "220525"
-        viewModel.serialNumber = "AA9798910"
+        if (intent.hasExtra(SERIAL_NUMBER).not()) {
+            finish()
+            return
+        }
+
+        viewModel.birthDate = intent.extras?.getString(BIRTH_DATE) ?: ""
+        viewModel.expiryDate = intent.extras?.getString(EXPIRY_DATE)
+        viewModel.serialNumber = intent.extras?.getString(SERIAL_NUMBER) ?: ""
 
         animationView = findViewById(R.id.animation_view)
         textViewNfcTitle = findViewById(R.id.textViewNfcTitle)
-
-
 
         adapter = NfcAdapter.getDefaultAdapter(this)
 
@@ -67,7 +83,6 @@ class NfcActivity : AppCompatActivity() {
 
 
         viewModel.errorRead.observe(this, {
-            Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show()
             findViewById<View>(R.id.progressBar)?.visibility = View.GONE
             showDialog()
         })
@@ -96,7 +111,9 @@ class NfcActivity : AppCompatActivity() {
         })
     }
 
-    private fun showDialog() {//todo
+    private fun showDialog() {
+        //todo nfc eror
+
 //        val dialog = ErrorNfcDialog(this)
 //        dialog.show()
     }

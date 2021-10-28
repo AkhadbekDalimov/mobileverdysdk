@@ -32,6 +32,6 @@ object VerdiUser {
 
     @[JvmStatic Keep]
     fun openNfcScanActivity(activity: Activity) {
-        activity.startActivity(NfcActivity.getInstance(activity))
+        activity.startActivity(NfcActivity.getInstance(activity, "", "", ""))
     }
 }

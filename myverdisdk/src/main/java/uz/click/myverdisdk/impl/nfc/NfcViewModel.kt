@@ -52,7 +52,6 @@ class NfcViewModel : ViewModel() {
                 if (serialNumber!!.length == 9 && expiryDate!!.length == 6 && birthDate!!.length == 6) {
                     val bacKey: BACKeySpec = BACKey(serialNumber, birthDate, expiryDate)
                     val isoDep = IsoDep.get(tag)
-                    isoDep.timeout = 5000
                     addInBackground(context, isoDep, bacKey)
                 }
             }
@@ -129,9 +128,10 @@ class NfcViewModel : ViewModel() {
         }.subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread()).subscribe({
                 if (it == 1f) {
+                    nextProgress.value = it
                     completeRead.postValue(person)
                 } else {
-                    nextProgress.postValue(it)
+                    nextProgress.value = it
                 }
             }, {
                 it.printStackTrace()
