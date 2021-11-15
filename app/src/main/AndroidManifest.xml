@@ -11,6 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.VerdimSDK">
         <activity
+            android:theme="@style/Theme.VerdimSDK"
             android:name="uz.click.myverdisdk.MainActivity"
             android:exported="true">
             <intent-filter>

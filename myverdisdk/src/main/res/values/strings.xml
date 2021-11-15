@@ -10,10 +10,12 @@
     <string name="switch_camera_button_alt" translatable="false"><![CDATA["   <string name=\"switch_camera_button_alt\">Переключить камеру</string>"]]></string>
     <string name="capture_button_alt">Snapshot</string>
     <string name="ok">Ok</string>
-    <string name="confirmation_code_error" >Invalid sms code</string>
-    <string name="server_error" >Server issue</string>
-    <string name="unknown_error" >Unknown error</string>
-    <string name="number_of_attempts_error" >Number of attempts to enter SMS verification code exceeded</string>
+    <string name="confirmation_code_error">Invalid sms code</string>
+    <string name="server_error">Server issue</string>
+    <string name="unknown_error">Unknown error</string>
+    <string name="number_of_attempts_error">Number of attempts to enter SMS verification code exceeded</string>
+    <string name="AppIdNotExist">App Id is invalid</string>
+    <string name="InvalidArguments">Arguments are not valid</string>
     <string name="nfc">NFC:</string>
     <string name="error_nfc">The document could not be recognized, \ n please try again</string>
     <string name="try_one">Try again</string>

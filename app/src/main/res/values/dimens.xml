@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="stepper_tab_icon_padding">5.5dp</dimen>
+
+    <dimen name="stepper_tab_text_spacing">12dp</dimen>
+
+    <dimen name="stepper_progress_spacing">6dp</dimen>
+
+    <dimen name="margin_standard">8dp</dimen>
+
+</resources>

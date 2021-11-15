@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -9,52 +9,50 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <Button
-        android:id="@+id/btnScanDocument"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Scan Document" />
 
-    <Button
-        android:id="@+id/btnSelfie"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Take a selfie" />
-
-    <Button
-        android:id="@+id/btnCheckAppId"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Check App Id" />
-
-    <Button
-        android:id="@+id/btnRegister"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Register" />
-
-
-    <Button
-        android:id="@+id/btnNfc"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Proceed NFC" />
-
-
-    <ImageView
-        android:id="@+id/ivResult"
+    <View
+        android:id="@+id/bgView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        tools:src="@mipmap/ic_launcher" />
+        android:layout_height="0dp"
+        android:background="#2196F3"
+        app:layout_constraintHeight_percent="0.15"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/tvResponse"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cvSteps"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:padding="32dp"
+        app:cardBackgroundColor="@color/white"
+        app:cardCornerRadius="8dp"
+        app:layout_constraintBottom_toBottomOf="@id/bgView"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/bgView"
+        app:layout_constraintWidth_percent="0.9">
+
+        <uz.click.myverdisdk.utils.StepperNavigationView
+            android:id="@+id/stepperNavigation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="12dp"
+            app:stepperItems="@menu/step_menu"
+            app:stepperTextSize="12sp"
+            app:stepperType="tab_numbered" />
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/vpSteps"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="Beginning"
-        android:textColor="@color/black"
-        android:textSize="16sp" />
+        android:layout_height="0dp"
+        android:layout_marginTop="12dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cvSteps" />
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

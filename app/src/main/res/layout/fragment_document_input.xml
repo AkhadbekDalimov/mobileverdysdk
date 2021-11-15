@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:context=".ui.DocumentInputFragment">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tlDocumentNumber"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_standard"
+            android:layout_marginTop="@dimen/margin_standard"
+            android:layout_marginEnd="@dimen/margin_standard"
+            android:textColorHint="@color/colorPrimary"
+            app:boxStrokeColor="@color/colorPrimary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/etDocumentNumber"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/DocumentNumber"
+                android:inputType="textCapCharacters"
+                android:maxLength="12"
+                android:textColor="@color/black"
+                tools:ignore="TextFields" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tlDateOfBirth"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_standard"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="@dimen/margin_standard"
+            android:textColorHint="@color/colorPrimary"
+            app:boxStrokeColor="@color/colorPrimary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tlDocumentNumber">
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/etDateOfBirth"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/DateOfBirth"
+                android:inputType="date"
+                android:maxLength="10"
+                android:textColor="@color/black" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tlDateOfExpiry"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_standard"
+            android:layout_marginEnd="@dimen/margin_standard"
+            android:textColorHint="@color/colorPrimary"
+            app:boxStrokeColor="@color/colorPrimary"
+            app:layout_constraintBottom_toTopOf="@id/llScanInfo"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tlDateOfBirth">
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/etDateOfExpiry"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/DateOfExpiry"
+                android:inputType="date"
+                android:maxLength="10"
+                android:textColor="@color/black" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <LinearLayout
+            android:id="@+id/llScanInfo"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="12dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toTopOf="@id/llActions"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tlDateOfExpiry">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/DocumentMainTextStyle"
+                    android:text="@string/DocumentNumber" />
+
+                <TextView
+                    android:id="@+id/tvDocumentNumber"
+                    style="@style/DocumentMainTextStyle" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/DocumentMainTextStyle"
+                    android:text="@string/DateOfBirth" />
+
+                <TextView
+                    android:id="@+id/tvDateOfBirth"
+                    style="@style/DocumentMainTextStyle" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/DocumentMainTextStyle"
+                    android:text="@string/DateOfExpiry" />
+
+                <TextView
+                    android:id="@+id/tvDateOfExpiry"
+                    style="@style/DocumentMainTextStyle" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/DocumentMainTextStyle"
+                    android:text="@string/PNFL" />
+
+                <TextView
+                    android:id="@+id/tvPINFL"
+                    style="@style/DocumentMainTextStyle" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llActions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/llScanInfo">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnScanPassport"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/colorPrimary"
+                android:text="Scan passport"
+                android:textColor="@color/white" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnScanQrId"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/colorPrimary"
+                android:text="Scan QR ID"
+                android:textColor="@color/white" />
+
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="8dp">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnNext"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:enabled="false"
+                    android:text="Next"
+                    android:textColor="@color/black" />
+
+                <ProgressBar
+                    android:id="@+id/pbLoading"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="end|center_vertical"
+                    android:layout_margin="6dp"
+                    android:elevation="6dp"
+                    android:indeterminate="true"
+                    android:indeterminateTint="@color/white"
+                    android:visibility="gone" />
+            </FrameLayout>
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

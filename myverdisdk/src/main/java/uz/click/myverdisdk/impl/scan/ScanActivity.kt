@@ -66,6 +66,9 @@ class ScanActivity : AppCompatActivity(),
 
         previewView = findViewById(R.id.previewView)
         findViewById<ImageView>(R.id.ivBack).setOnClickListener { finish() }
+    }
+
+    private fun changeScanTypeUi() {
         if (isQrCode) {
             findViewById<OverlayViewQrCode>(R.id.qrCodeView).visibility = View.VISIBLE
             findViewById<ConstraintLayout>(R.id.clPassport).visibility = View.GONE
@@ -73,7 +76,6 @@ class ScanActivity : AppCompatActivity(),
             findViewById<OverlayViewQrCode>(R.id.qrCodeView).visibility = View.GONE
             findViewById<ConstraintLayout>(R.id.clPassport).visibility = View.VISIBLE
         }
-
     }
 
     private fun getCameraProvider() {
@@ -243,13 +245,14 @@ class ScanActivity : AppCompatActivity(),
     }
 
     override fun onDetectPassport(results: Boolean) {
-        Toast.makeText(this, "onDetectPassport",Toast.LENGTH_LONG).show()
+        isQrCode = false
+        changeScanTypeUi()
     }
 
     override fun onDetectIdCard(results: Boolean) {
         isQrCode = true
+        changeScanTypeUi()
         bindAnalysisUseCase()
-        Toast.makeText(this, "onDetectIdCard",Toast.LENGTH_LONG).show()
     }
 
 }

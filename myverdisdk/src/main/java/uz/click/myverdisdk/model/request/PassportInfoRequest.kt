@@ -10,8 +10,5 @@ data class PassportInfoRequest(
     val signString: String?,
     val clientPubKey: String,
     val modelMobileData: ModelMobileData,
-    val appId: String =
-//        MyVerdiSdk.getInstance()?.appId ?:
-        ""
-
+    val appId: String = ""
 )

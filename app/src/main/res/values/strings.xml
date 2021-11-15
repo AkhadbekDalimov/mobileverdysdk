@@ -1,3 +1,11 @@
 <resources>
-    <string name="app_name">Verdi MSDK Sample</string>
+    <string name="app_name" translatable="false">Verdi MSDK Sample</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
+
+    <string name="loremIpsum" translatable="false">"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."</string>
+    <string name="DocumentNumber">Document Number</string>
+    <string name="DateOfBirth">Date of birth</string>
+    <string name="DateOfExpiry">Date of expiry</string>
+    <string name="PNFL">PNFL</string>
 </resources>

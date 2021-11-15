@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/step1Approval"
+        android:title="Approval" />
+
+    <item
+        android:id="@+id/step2InputDocument"
+        android:title="Document" />
+
+    <item
+        android:id="@+id/step3NfcOrSelfie"
+        android:title="Identification" />
+
+</menu>

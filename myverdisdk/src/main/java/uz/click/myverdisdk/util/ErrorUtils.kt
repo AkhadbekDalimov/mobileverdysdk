@@ -29,7 +29,9 @@ object ErrorUtils {
 
     fun getErrorMessage(e: Exception, locale: Locale, context: Context): String {
         return when (e) {
-
+            is AppIdEmptyException ->{
+                LanguageUtils.getLocaleStringResource(locale, R.string.AppIdNotExist, context)
+            }
             is ServerErrorException -> {
                 LanguageUtils.getLocaleStringResource(locale, R.string.server_error, context)
             }

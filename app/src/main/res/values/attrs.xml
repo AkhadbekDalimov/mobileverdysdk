@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="StepperNavigationView">
+        <attr name="stepperWidgetColor" format="color" />
+        <attr name="stepperIconSize" format="dimension" />
+        <attr name="stepperItems" format="reference" />
+        <attr name="stepperTextAppearance" format="reference" />
+        <attr name="stepperTextColor" format="color" />
+        <attr name="stepperTextSize" format="dimension" />=
+        <attr name="stepperFleetDuration" format="integer" />
+
+        <attr name="stepperType">
+            <enum name="tab" value="0x01" />
+            <enum name="tab_numbered" value="0x02" />
+            <enum name="progress" value="0x03" />
+            <enum name="fleets" value="0x04" />
+        </attr>
+    </declare-styleable>
+
+</resources>

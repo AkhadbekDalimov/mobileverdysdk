@@ -12,8 +12,8 @@ class App : Application() {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
         val config = VerdiUserConfig
             .Builder()
-            .appId("SomeAppID")
+            .appId("P8g13lFKmXo8TlFO")
             .build()
-        VerdiUser.init(config)
+        VerdiUser.init(config, this)
     }
 }

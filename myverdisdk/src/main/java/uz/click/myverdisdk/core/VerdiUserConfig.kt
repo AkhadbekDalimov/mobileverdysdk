@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.os.Parcelable
 import androidx.annotation.Nullable
 import kotlinx.android.parcel.Parcelize
+import uz.click.myverdisdk.core.callbacks.VerdiNfcListener
 import uz.click.myverdisdk.core.callbacks.VerdiScanListener
 import uz.click.myverdisdk.core.callbacks.VerdiSelfieListener
 import uz.click.myverdisdk.core.errors.AppIdEmptyException
@@ -29,8 +30,10 @@ data class VerdiUserConfig(
     var imageFaceBase: Bitmap?,
     var base64Image: String? = "",
     var scanListener: VerdiScanListener?,
-    var selfieListener: VerdiSelfieListener?
-) : Parcelable {
+    var selfieListener: VerdiSelfieListener?,
+    var nfcListener: VerdiNfcListener?,
+
+    ) : Parcelable {
     class Builder {
         private var appId: String? = null
         private var locale: String = "ru"
@@ -45,6 +48,7 @@ data class VerdiUserConfig(
         private var base64Image: String? = null
         private var scanListener: VerdiScanListener? = null
         private var selfieListener: VerdiSelfieListener? = null
+        private var nfcListener: VerdiNfcListener? = null
 
         fun appId(appId: String) = apply { this.appId = appId }
         fun locale(locale: String) = apply { this.locale = locale }
@@ -65,6 +69,9 @@ data class VerdiUserConfig(
         fun selfieListener(selfieListener: VerdiSelfieListener) =
             apply { this.selfieListener = selfieListener }
 
+        fun nfcListener(nfcListener: VerdiNfcListener) =
+            apply { this.nfcListener = nfcListener }
+
         fun build(): VerdiUserConfig {
             return VerdiUserConfig(
                 appId ?: throw AppIdEmptyException(),
@@ -79,7 +86,8 @@ data class VerdiUserConfig(
                 imageFaceBase,
                 base64Image,
                 scanListener,
-                selfieListener
+                selfieListener,
+                nfcListener
             )
         }
     }

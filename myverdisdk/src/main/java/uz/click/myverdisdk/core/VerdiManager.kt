@@ -1,13 +1,19 @@
 package uz.click.myverdisdk.core
 
 import android.app.Activity
+import android.content.Context
 import android.os.Build
 import android.provider.Settings
 import android.util.Log
+import com.chuckerteam.chucker.api.ChuckerCollector
+import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.squareup.moshi.Moshi
 import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
+import uz.click.myverdisdk.R
 import uz.click.myverdisdk.core.callbacks.ResponseListener
+import uz.click.myverdisdk.core.errors.AppIdEmptyException
+import uz.click.myverdisdk.core.errors.ArgumentEmptyException
 import uz.click.myverdisdk.core.errors.ServerNotAvailableException
 import uz.click.myverdisdk.model.info.ModelServiceInfo
 import uz.click.myverdisdk.model.info.ServiceInfo
@@ -17,10 +23,11 @@ import uz.click.myverdisdk.util.ErrorUtils
 import uz.click.myverdisdk.util.md5
 import uz.click.myverdisdk.util.toBase64
 import java.io.IOException
+import java.lang.Exception
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class VerdiManager {
+class VerdiManager(val context: Context? = null) {
 
     companion object {
         var logs = true
@@ -55,6 +62,15 @@ class VerdiManager {
         val okhttpClientBuilder = OkHttpClient.Builder()
         okhttpClientBuilder.dispatcher(dispatcher)
         okhttpClientBuilder.addInterceptor(loggingInterceptor())
+        if (context != null)
+            okhttpClientBuilder.addInterceptor(
+                ChuckerInterceptor.Builder(context)
+                    .collector(ChuckerCollector(context))
+                    .maxContentLength(250000L)
+                    .redactHeaders(emptySet())
+                    .alwaysReadResponseBody(false)
+                    .build()
+            )
         okhttpClientBuilder
             .connectTimeout(CONNECT_TIME_OUT, TimeUnit.SECONDS)
             .readTimeout(READ_TIME_OUT, TimeUnit.SECONDS)
@@ -65,13 +81,17 @@ class VerdiManager {
     private fun loggingInterceptor(): Interceptor {
         val logging = HttpLoggingInterceptor()
         if (logs)
-            logging.level = HttpLoggingInterceptor.Level.BODY
+            logging.level = HttpLoggingInterceptor.Level.BASIC
         else
             logging.level = HttpLoggingInterceptor.Level.NONE
         return logging
     }
 
     fun checkAppId(activity: Activity, listener: ResponseListener<AppIdResponse>) {
+        if (VerdiUser.config.appId.isEmpty()) {
+            listener.onFailure(AppIdEmptyException(activity.getString(R.string.AppIdNotExist)))
+            return
+        }
         val appIdRequest = AppIdRequest(
             VerdiUser.config.appId,
             UUID.randomUUID().toString()
@@ -133,15 +153,19 @@ class VerdiManager {
         })
     }
 
-    fun registerPerson(activity: Activity, listener: ResponseListener<ModelPersonAnswere>) {
+    fun registerPerson(activity: Activity, listener: ResponseListener<RegistrationResponse>) {
         val config = VerdiUser.config
+
         val publicKey = UUID.randomUUID().toString()
         val guid = UUID.randomUUID().toString()
         val deviceID: String =
             Settings.Secure.getString(activity.contentResolver, Settings.Secure.ANDROID_ID)
         val signString = md5(
             guid +
-                    config.serialNumber + config.birthDate + config.dateOfExpiry + publicKey
+                    config.serialNumber +
+                    config.birthDate +
+                    config.dateOfExpiry +
+                    publicKey
         )
         val passRequest = PassportRequest(
             config.serialNumber,
@@ -167,13 +191,14 @@ class VerdiManager {
         val modelServiceInfo = ModelServiceInfo()
         modelServiceInfo.serviceInfo = serviceInfo
         val passportRequest = PassportInfoRequest(
-            guid,
-            modelPersonRequest,
-            personPhoto,
-            modelServiceInfo,
-            signString,
-            publicKey,
-            modelMobileData
+            requestGuid = guid,
+            modelPersonPassport = modelPersonRequest,
+            modelPersonPhoto = personPhoto,
+            modelServiceInfo = modelServiceInfo,
+            signString = signString,
+            clientPubKey = publicKey,
+            modelMobileData = modelMobileData,
+            appId = VerdiUser.config.appId
         )
 
         val adapter = moshi.adapter<PassportInfoRequest>(PassportInfoRequest::class.java)
@@ -204,10 +229,10 @@ class VerdiManager {
                     }
 
                     response.body()?.let {
-                        Log.d("TagCheck", it.toString())
                         val initialResponse =
-                            moshi.adapter<ModelPersonAnswere>(ModelPersonAnswere::class.java)
+                            moshi.adapter<RegistrationResponse>(RegistrationResponse::class.java)
                                 .fromJson(it.string())
+                        Log.d("TagCheck", initialResponse.toString())
                         activity.runOnUiThread {
                             when (initialResponse?.code) {
                                 0 -> {
@@ -236,10 +261,11 @@ class VerdiManager {
     }
 
 
-    fun verifyPerson(activity: Activity, listener: ResponseListener<AppIdResponse>){
+    fun verifyPerson(activity: Activity, listener: ResponseListener<AppIdResponse>) {
         val deviceSerialNumber: String = VerdiUser.config.serialNumber
         val guid = UUID.randomUUID().toString()
-        val deviceID: String? = Settings.Secure.getString(activity.contentResolver, Settings.Secure.ANDROID_ID)
+        val deviceID: String? =
+            Settings.Secure.getString(activity.contentResolver, Settings.Secure.ANDROID_ID)
 //        val signString = md5(buildString {
 //            guid + deviceSerialNumber + deviceID + dataSource.getPubKey()
 //        })
