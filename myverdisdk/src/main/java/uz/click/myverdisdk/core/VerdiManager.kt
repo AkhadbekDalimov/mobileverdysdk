@@ -81,7 +81,7 @@ class VerdiManager(val context: Context? = null) {
     private fun loggingInterceptor(): Interceptor {
         val logging = HttpLoggingInterceptor()
         if (logs)
-            logging.level = HttpLoggingInterceptor.Level.BASIC
+            logging.level = HttpLoggingInterceptor.Level.BODY
         else
             logging.level = HttpLoggingInterceptor.Level.NONE
         return logging
@@ -123,7 +123,7 @@ class VerdiManager(val context: Context? = null) {
                     }
 
                     response.body()?.let {
-                        Log.d("TagCheck", it.toString())
+
                         val initialResponse =
                             moshi.adapter<AppIdResponse>(AppIdResponse::class.java)
                                 .fromJson(it.string())
@@ -200,7 +200,10 @@ class VerdiManager(val context: Context? = null) {
             modelMobileData = modelMobileData,
             appId = VerdiUser.config.appId
         )
-
+        Log.d("RequestTag",
+            moshi.adapter<PassportInfoRequest>(PassportInfoRequest::class.java)
+                .toJson(passportRequest)
+        )
         val adapter = moshi.adapter<PassportInfoRequest>(PassportInfoRequest::class.java)
         val body = RequestBody.create(JSON, adapter.toJson(passportRequest))
         val request = Request.Builder()
@@ -232,7 +235,10 @@ class VerdiManager(val context: Context? = null) {
                         val initialResponse =
                             moshi.adapter<RegistrationResponse>(RegistrationResponse::class.java)
                                 .fromJson(it.string())
-                        Log.d("TagCheck", initialResponse.toString())
+                        Log.d("TagCheck",
+                            moshi.adapter<RegistrationResponse>(RegistrationResponse::class.java)
+                                .toJson(initialResponse)
+                        )
                         activity.runOnUiThread {
                             when (initialResponse?.code) {
                                 0 -> {
@@ -261,14 +267,11 @@ class VerdiManager(val context: Context? = null) {
     }
 
 
-    fun verifyPerson(activity: Activity, listener: ResponseListener<AppIdResponse>) {
+    fun verifyPerson(activity: Activity, listener: ResponseListener<RegistrationResponse>) {
         val deviceSerialNumber: String = VerdiUser.config.serialNumber
         val guid = UUID.randomUUID().toString()
         val deviceID: String? =
             Settings.Secure.getString(activity.contentResolver, Settings.Secure.ANDROID_ID)
-//        val signString = md5(buildString {
-//            guid + deviceSerialNumber + deviceID + dataSource.getPubKey()
-//        })
         val personPhoto = ModelPersonPhotoRequest(null, null, "")
         val model = Build.MODEL
         val modelMobileData =
@@ -286,5 +289,69 @@ class VerdiManager(val context: Context? = null) {
             guid,
             modelMobileData
         )
+
+        Log.d("RequestTag",
+            moshi.adapter<PassportInfoRequest>(PassportInfoRequest::class.java)
+                .toJson(passportRequest)
+        )
+        val adapter = moshi.adapter<PassportInfoRequest>(PassportInfoRequest::class.java)
+        val body = RequestBody.create(JSON, adapter.toJson(passportRequest))
+        val request = Request.Builder()
+            .url(VERDI_BASE_URL + REQUEST_VERIFICATION)
+            .addHeader("Accept", "application/json")
+            .addHeader("Content-type", "application/json")
+            .addHeader("Authorization", AUTH_PINPP)
+            .post(body)
+            .build()
+
+        okClient.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                listener.onFailure(e)
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                if (response.isSuccessful) {
+                    if (response.body() == null) {
+                        listener.onFailure(
+                            ServerNotAvailableException(
+                                response.code(),
+                                response.message()
+                            )
+                        )
+                        return
+                    }
+
+                    response.body()?.let {
+                        val initialResponse =
+                            moshi.adapter<RegistrationResponse>(RegistrationResponse::class.java)
+                                .fromJson(it.string())
+                        Log.d("TagCheck",
+                            moshi.adapter<RegistrationResponse>(RegistrationResponse::class.java)
+                                .toJson(initialResponse)
+                        )
+                        activity.runOnUiThread {
+                            when (initialResponse?.code) {
+                                0 -> {
+                                    listener.onSuccess(initialResponse)
+                                }
+                                else -> {
+                                    listener.onFailure(
+                                        ErrorUtils.getException(
+                                            initialResponse?.code,
+                                            initialResponse?.message
+                                        )
+                                    )
+                                }
+                            }
+                        }
+                    }
+
+                } else {
+                    listener.onFailure(
+                        ServerNotAvailableException(response.code(), response.message())
+                    )
+                }
+            }
+        })
     }
 }

@@ -22,10 +22,13 @@ import android.content.DialogInterface
 
 import android.R
 import android.graphics.Bitmap
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.view.isVisible
 import uz.click.myverdisdk.core.callbacks.VerdiSelfieListener
 import uz.click.myverdisdk.model.request.RegistrationResponse
+import uz.click.myverdisdk.utils.show
 
 
 class IdentificationFragment : Fragment(),
@@ -58,15 +61,18 @@ class IdentificationFragment : Fragment(),
         }
 
         binding.btnRegister.setOnClickListener {
+            binding.pbLoading.show()
             VerdiUser.registerPerson(
                 requireActivity(),
                 object : ResponseListener<RegistrationResponse> {
                     override fun onFailure(e: Exception) {
+                        binding.pbLoading.hide()
                         toast(e.message.toString())
                     }
 
                     override fun onSuccess(response: RegistrationResponse) {
-                        toast(response.toString())
+                        binding.pbLoading.hide()
+                        toast(response.message)
                     }
                 })
         }
@@ -77,6 +83,7 @@ class IdentificationFragment : Fragment(),
     }
 
     override fun onNfcChecked(isNfcAvailable: Boolean, isNfcEnabled: Boolean) {
+        Log.d("NfcCheckTag", "Available: $isNfcAvailable  Enabled : $isNfcEnabled" )
         if (!isNfcAvailable) {
             binding.btnNFCScan.hide()
             return
@@ -96,7 +103,7 @@ class IdentificationFragment : Fragment(),
                 })
             nfcAlertDialog.show()
         }
-
+        binding.btnNFCScan.isVisible = isNfcEnabled
 
     }
 

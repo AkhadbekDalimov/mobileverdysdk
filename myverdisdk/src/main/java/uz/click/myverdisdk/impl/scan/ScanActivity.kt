@@ -226,7 +226,7 @@ class ScanActivity : AppCompatActivity(),
     override fun onSuccess(mrzInfo: MRZInfo?) {
         Log.i(TAG, "onSuccess")
         mrzInfo?.let {
-            VerdiUser.config.documentNumber = mrzInfo.documentNumber
+            VerdiUser.config.serialNumber = mrzInfo.documentNumber
             VerdiUser.config.dateOfExpiry = DateUtil.convertFromMrzDate(mrzInfo.dateOfExpiry)
             VerdiUser.config.birthDate = DateUtil.convertFromMrzDate(mrzInfo.dateOfBirth)
             VerdiUser.config.personalNumber = mrzInfo.personalNumber

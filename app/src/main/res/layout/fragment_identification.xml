@@ -20,13 +20,14 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnNFCScan"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_margin="8dp"
         android:backgroundTint="@color/colorPrimary"
         android:text="Scan NFC"
         android:textColor="@color/white"
         android:visibility="gone"
-        android:layout_margin="8dp"
+        app:layout_constraintWidth_percent="0.9"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintBottom_toTopOf="@id/btnTakeSelfie"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -35,31 +36,48 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnTakeSelfie"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_margin="8dp"
         android:backgroundTint="@color/colorPrimary"
         android:text="Take a selfie"
         android:textColor="@color/white"
         android:visibility="visible"
-        android:layout_margin="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/btnRegister"
+        app:layout_constraintBottom_toTopOf="@id/flRegister"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintWidth_percent="0.9" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnRegister"
-        android:layout_width="match_parent"
+    <FrameLayout
+        android:id="@+id/flRegister"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/colorPrimary"
-        android:text="Register"
-        android:textColor="@color/white"
-        android:visibility="visible"
-        android:layout_margin="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        />
+        app:layout_constraintWidth_percent="0.9">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnRegister"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/colorPrimary"
+            android:text="Register"
+            android:textColor="@color/white"
+            android:visibility="visible" />
+
+        <ProgressBar
+            android:id="@+id/pbLoading"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="end|center_vertical"
+            android:layout_margin="6dp"
+            android:elevation="6dp"
+            android:indeterminate="true"
+            android:indeterminateTint="@color/white"
+            android:visibility="gone" />
+    </FrameLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

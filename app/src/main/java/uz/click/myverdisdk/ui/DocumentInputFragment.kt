@@ -81,10 +81,10 @@ class DocumentInputFragment : Fragment(), VerdiScanListener {
 
     override fun onScanSuccess() {
         toast("Scan Success", VerdiUser.config.toString())
-        binding.etDocumentNumber.setText(VerdiUser.config.documentNumber)
+        binding.etDocumentNumber.setText(VerdiUser.config.serialNumber)
         binding.etDateOfBirth.setText(VerdiUser.config.birthDate)
         binding.etDateOfExpiry.setText(VerdiUser.config.dateOfExpiry)
-        binding.tvDocumentNumber.text = VerdiUser.config.documentNumber
+        binding.tvDocumentNumber.text = VerdiUser.config.serialNumber
         binding.tvDateOfBirth.text = VerdiUser.config.birthDate
         binding.tvDateOfExpiry.text = VerdiUser.config.dateOfExpiry
         binding.tvPINFL.text = VerdiUser.config.personalNumber
