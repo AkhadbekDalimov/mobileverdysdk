@@ -41,8 +41,8 @@ class DocumentInputFragment : Fragment(), VerdiScanListener {
         binding.btnScanPassport.setOnClickListener {
             VerdiUser.openDocumentScanActivity(requireActivity())
         }
-        binding.btnScanQrId.setOnClickListener {
-            VerdiUser.openDocumentScanActivity(requireActivity())
+        binding.btnScanId.setOnClickListener {
+            VerdiUser.openDocumentScanActivity(requireActivity(), true)
         }
         viewModel.nextButtonEnabled.observe(viewLifecycleOwner, Observer {
             binding.btnNext.isEnabled = it

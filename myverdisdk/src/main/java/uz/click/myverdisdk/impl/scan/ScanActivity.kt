@@ -49,8 +49,11 @@ class ScanActivity : AppCompatActivity(),
         const val VERDI_LISTENER = "verdiListener"
         fun getInstance(
             activity: Activity,
+            isQrCode : Boolean
         ): Intent {
-            return Intent(activity, ScanActivity::class.java)
+            return Intent(activity, ScanActivity::class.java).apply {
+                putExtra(IS_QR_CODE,  isQrCode)
+            }
         }
     }
 
@@ -66,6 +69,9 @@ class ScanActivity : AppCompatActivity(),
 
         previewView = findViewById(R.id.previewView)
         findViewById<ImageView>(R.id.ivBack).setOnClickListener { finish() }
+
+        isQrCode = intent.extras?.getBoolean(IS_QR_CODE) ?: false
+        changeScanTypeUi()
     }
 
     private fun changeScanTypeUi() {

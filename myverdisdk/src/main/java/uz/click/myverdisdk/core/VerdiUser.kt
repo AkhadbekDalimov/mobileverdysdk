@@ -36,8 +36,8 @@ object VerdiUser {
     }
 
     @[JvmStatic Keep]
-    fun openDocumentScanActivity(activity: Activity) {
-        activity.startActivity(ScanActivity.getInstance(activity))
+    fun openDocumentScanActivity(activity: Activity, isQrCodeScan: Boolean = false) {
+        activity.startActivity(ScanActivity.getInstance(activity, isQrCodeScan))
     }
 
     @[JvmStatic Keep]
