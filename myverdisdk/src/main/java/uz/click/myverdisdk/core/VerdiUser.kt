@@ -9,11 +9,13 @@ import uz.click.myverdisdk.R
 import uz.click.myverdisdk.core.callbacks.ResponseListener
 import uz.click.myverdisdk.core.callbacks.VerdiNfcCheckListener
 import uz.click.myverdisdk.core.errors.NFCNotEnabledException
+import uz.click.myverdisdk.core.errors.NfcInvalidDataException
 import uz.click.myverdisdk.impl.nfc.NfcActivity
 import uz.click.myverdisdk.impl.scan.ScanActivity
 import uz.click.myverdisdk.impl.selfie.SelfieActivity
 import uz.click.myverdisdk.model.request.RegistrationResponse
 import uz.click.myverdisdk.model.response.AppIdResponse
+import uz.click.myverdisdk.util.DateUtil
 
 /**
  * @author Azamat on 27/09/21
@@ -47,7 +49,20 @@ object VerdiUser {
 
     @[JvmStatic Keep]
     fun openNfcScanActivity(activity: Activity) {
-        activity.startActivity(NfcActivity.getInstance(activity, "", "", ""))
+        if (config.serialNumber.isEmpty()
+            || config.birthDate.isEmpty()
+            || config.dateOfExpiry.isEmpty()
+        ) {
+            config.nfcListener?.onNfcError(NfcInvalidDataException())
+            return
+        }
+        activity.startActivity(
+            NfcActivity.getInstance(
+                activity, config.serialNumber,
+                DateUtil.changeFormatYYDDMM(config.birthDate),
+                DateUtil.changeFormatYYDDMM(config.dateOfExpiry)
+            )
+        )
     }
 
     @[JvmStatic Keep]

@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import uz.click.myverdisdk.core.VerdiUser
 import uz.click.myverdisdk.core.VerdiUserConfig
 
+
 class App : Application() {
 
     override fun onCreate() {

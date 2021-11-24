@@ -45,7 +45,8 @@ class ScanActivity : AppCompatActivity(),
     private val TAG = this::class.java.name
 
     companion object {
-        const val IS_QR_CODE = "isQrCode"
+        const val IS_QR_CODE = "isQrC" +
+                "/ode"
         const val VERDI_LISTENER = "verdiListener"
         fun getInstance(
             activity: Activity,

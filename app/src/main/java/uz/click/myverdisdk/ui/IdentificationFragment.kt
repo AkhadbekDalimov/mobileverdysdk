@@ -27,6 +27,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import uz.click.myverdisdk.core.callbacks.VerdiSelfieListener
+import uz.click.myverdisdk.core.errors.NfcInvalidDataException
 import uz.click.myverdisdk.model.request.RegistrationResponse
 import uz.click.myverdisdk.utils.show
 
@@ -80,6 +81,14 @@ class IdentificationFragment : Fragment(),
 
     override fun onNfcSuccess() {
         toast("Nfc Successfully read!")
+    }
+
+    override fun onNfcError(exception: java.lang.Exception) {
+        when(exception){
+            is NfcInvalidDataException->{
+                //TODO
+            }
+        }
     }
 
     override fun onNfcChecked(isNfcAvailable: Boolean, isNfcEnabled: Boolean) {
