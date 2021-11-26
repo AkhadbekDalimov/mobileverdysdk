@@ -7,34 +7,28 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import uz.click.myverdisdk.core.VerdiUser
+import uz.click.myverdisdk.core.Verdi
 import uz.click.myverdisdk.core.callbacks.ResponseListener
-import uz.click.myverdisdk.core.callbacks.VerdiNfcCheckListener
 import uz.click.myverdisdk.core.callbacks.VerdiNfcListener
-import uz.click.myverdisdk.core.errors.NFCNotAvailableException
-import uz.click.myverdisdk.core.errors.NFCNotEnabledException
 import uz.click.myverdisdk.databinding.FragmentIdentificationBinding
 import uz.click.myverdisdk.utils.hide
 import uz.click.myverdisdk.utils.toast
-import android.os.Build
 
 import android.content.DialogInterface
 
-import android.R
-import android.graphics.Bitmap
 import android.util.Log
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
-import uz.click.myverdisdk.core.callbacks.VerdiSelfieListener
+import uz.click.myverdisdk.core.callbacks.VerdiListener
 import uz.click.myverdisdk.core.errors.NfcInvalidDataException
 import uz.click.myverdisdk.model.request.RegistrationResponse
 import uz.click.myverdisdk.utils.show
 
 
 class IdentificationFragment : Fragment(),
-    VerdiNfcListener,
-    VerdiNfcCheckListener {
+    VerdiListener,
+    VerdiNfcListener {
+
     private lateinit var binding: FragmentIdentificationBinding
 
     override fun onCreateView(
@@ -47,24 +41,19 @@ class IdentificationFragment : Fragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        VerdiUser.checkNFCAvailability(requireContext(), this)
+
+        Verdi.checkNFCAvailability( this)
 
         binding.btnNFCScan.setOnClickListener {
-            VerdiUser.openNfcScanActivity(requireActivity())
+            Verdi.openNfcScanActivity(requireActivity(),this)
         }
         binding.btnTakeSelfie.setOnClickListener {
-            VerdiUser.openSelfieActivity(requireActivity())
-            VerdiUser.config.selfieListener = object : VerdiSelfieListener {
-                override fun onSelfieSuccess(selfie: Bitmap) {
-                    binding.ivSelfie.setImageBitmap(selfie)
-                }
-            }
+            Verdi.openSelfieActivity(requireActivity(), this)
         }
 
         binding.btnRegister.setOnClickListener {
             binding.pbLoading.show()
-            VerdiUser.registerPerson(
-                requireActivity(),
+            Verdi.registerPerson(
                 object : ResponseListener<RegistrationResponse> {
                     override fun onFailure(e: Exception) {
                         binding.pbLoading.hide()
@@ -79,17 +68,19 @@ class IdentificationFragment : Fragment(),
         }
     }
 
-    override fun onNfcSuccess() {
+    override fun onSuccess() {
+        toast("Selfie taken successfully")
+        binding.ivSelfie.setImageBitmap(Verdi.verdiUser.imageFaceBase)
+    }
+
+    override fun onError(exception: Exception) {
+
+    }
+
+    override fun onNfcScanned() {
         toast("Nfc Successfully read!")
     }
 
-    override fun onNfcError(exception: java.lang.Exception) {
-        when(exception){
-            is NfcInvalidDataException->{
-                //TODO
-            }
-        }
-    }
 
     override fun onNfcChecked(isNfcAvailable: Boolean, isNfcEnabled: Boolean) {
         Log.d("NfcCheckTag", "Available: $isNfcAvailable  Enabled : $isNfcEnabled" )
@@ -114,6 +105,14 @@ class IdentificationFragment : Fragment(),
         }
         binding.btnNFCScan.isVisible = isNfcEnabled
 
+    }
+
+    override fun onNfcError(exception: java.lang.Exception) {
+        when(exception){
+            is NfcInvalidDataException->{
+                //TODO
+            }
+        }
     }
 
     companion object {

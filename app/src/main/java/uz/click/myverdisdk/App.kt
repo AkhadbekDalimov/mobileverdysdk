@@ -2,7 +2,7 @@ package uz.click.myverdisdk
 
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
-import uz.click.myverdisdk.core.VerdiUser
+import uz.click.myverdisdk.core.Verdi
 import uz.click.myverdisdk.core.VerdiUserConfig
 
 
@@ -15,6 +15,6 @@ class App : Application() {
             .Builder()
             .appId("P8g13lFKmXo8TlFO")
             .build()
-        VerdiUser.init(config, this)
+        Verdi.init(this, config)
     }
 }

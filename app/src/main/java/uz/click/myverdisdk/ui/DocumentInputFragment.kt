@@ -1,7 +1,6 @@
 package uz.click.myverdisdk.ui
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -10,19 +9,15 @@ import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import uz.click.myverdisdk.MainViewModel
-import uz.click.myverdisdk.core.VerdiUser
-import uz.click.myverdisdk.core.callbacks.ResponseListener
-import uz.click.myverdisdk.core.callbacks.VerdiScanListener
+import uz.click.myverdisdk.core.Verdi
+import uz.click.myverdisdk.core.callbacks.VerdiListener
 import uz.click.myverdisdk.databinding.FragmentDocumentInputBinding
-import uz.click.myverdisdk.model.request.RegistrationResponse
 import uz.click.myverdisdk.util.DocumentInputType
 import uz.click.myverdisdk.util.DocumentInputValidation
-import uz.click.myverdisdk.utils.hide
-import uz.click.myverdisdk.utils.show
 import uz.click.myverdisdk.utils.toast
-import java.time.LocalDateTime
+import java.lang.Exception
 
-class DocumentInputFragment : Fragment(), VerdiScanListener {
+class DocumentInputFragment : Fragment(), VerdiListener {
     private lateinit var binding: FragmentDocumentInputBinding
     private val viewModel by activityViewModels<MainViewModel>()
 
@@ -37,12 +32,11 @@ class DocumentInputFragment : Fragment(), VerdiScanListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        VerdiUser.config.scanListener = this
         binding.btnScanPassport.setOnClickListener {
-            VerdiUser.openDocumentScanActivity(requireActivity())
+            Verdi.openDocumentScanActivity(requireActivity(), this)
         }
         binding.btnScanId.setOnClickListener {
-            VerdiUser.openDocumentScanActivity(requireActivity(), true)
+            Verdi.openDocumentScanActivity(requireActivity(), this, true)
         }
         viewModel.nextButtonEnabled.observe(viewLifecycleOwner, Observer {
             binding.btnNext.isEnabled = it
@@ -79,15 +73,19 @@ class DocumentInputFragment : Fragment(), VerdiScanListener {
         }
     }
 
-    override fun onScanSuccess() {
-        toast("Scan Success", VerdiUser.config.toString())
-        binding.etDocumentNumber.setText(VerdiUser.config.serialNumber)
-        binding.etDateOfBirth.setText(VerdiUser.config.birthDate)
-        binding.etDateOfExpiry.setText(VerdiUser.config.dateOfExpiry)
-        binding.tvDocumentNumber.text = VerdiUser.config.serialNumber
-        binding.tvDateOfBirth.text = VerdiUser.config.birthDate
-        binding.tvDateOfExpiry.text = VerdiUser.config.dateOfExpiry
-        binding.tvPINFL.text = VerdiUser.config.personalNumber
+    override fun onSuccess() {
+        toast("Scan Success", Verdi.verdiUser.toString())
+        binding.etDocumentNumber.setText(Verdi.verdiUser.serialNumber)
+        binding.etDateOfBirth.setText(Verdi.verdiUser.birthDate)
+        binding.etDateOfExpiry.setText(Verdi.verdiUser.dateOfExpiry)
+        binding.tvDocumentNumber.text = Verdi.verdiUser.serialNumber
+        binding.tvDateOfBirth.text = Verdi.verdiUser.birthDate
+        binding.tvDateOfExpiry.text = Verdi.verdiUser.dateOfExpiry
+        binding.tvPINFL.text = Verdi.verdiUser.personalNumber
+    }
+
+    override fun onError(exception: Exception) {
+
     }
 
     companion object {
