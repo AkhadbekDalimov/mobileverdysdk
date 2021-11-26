@@ -36,6 +36,12 @@ object Verdi {
 
     private var nfcAdapter : NfcAdapter? = null
 
+    val isNfcAvailable : Boolean
+        get() = nfcAdapter != null
+
+    val isNfcEnabled : Boolean
+        get() = nfcAdapter?.isEnabled == true
+
     @[JvmStatic Keep]
     fun init(
         applicationContext: Context,
@@ -59,7 +65,6 @@ object Verdi {
     ) {
         this.verdiListener = verdiListener
         activity.startActivity(ScanActivity.getInstance(activity, isQrCodeScan))
-
     }
 
     @[JvmStatic Keep]
@@ -104,18 +109,5 @@ object Verdi {
             listener.onFailure(VerdiNotInitializedException())
         }
     }
-
-    /**
-     * @param
-     */
-    @[JvmStatic Keep]
-    fun checkNFCAvailability(listener: VerdiNfcListener) {
-        when {
-            nfcAdapter == null -> listener.onNfcChecked(isNfcAvailable = false, isNfcEnabled = false)
-            nfcAdapter?.isEnabled != true -> listener.onNfcChecked(isNfcAvailable = false, isNfcEnabled = true)
-            else -> listener.onNfcChecked(isNfcAvailable = true, isNfcEnabled = true)
-        }
-    }
-
 
 }

@@ -42,8 +42,7 @@ class IdentificationFragment : Fragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        Verdi.checkNFCAvailability( this)
-
+        onNfcChecked(Verdi.isNfcAvailable, Verdi.isNfcEnabled)
         binding.btnNFCScan.setOnClickListener {
             Verdi.openNfcScanActivity(requireActivity(),this)
         }
@@ -81,8 +80,16 @@ class IdentificationFragment : Fragment(),
         toast("Nfc Successfully read!")
     }
 
+    override fun onNfcError(exception: java.lang.Exception) {
+        when(exception){
+            is NfcInvalidDataException->{
+                //TODO
+            }
+        }
+    }
 
-    override fun onNfcChecked(isNfcAvailable: Boolean, isNfcEnabled: Boolean) {
+
+    private fun onNfcChecked(isNfcAvailable: Boolean, isNfcEnabled: Boolean) {
         Log.d("NfcCheckTag", "Available: $isNfcAvailable  Enabled : $isNfcEnabled" )
         if (!isNfcAvailable) {
             binding.btnNFCScan.hide()
@@ -107,13 +114,7 @@ class IdentificationFragment : Fragment(),
 
     }
 
-    override fun onNfcError(exception: java.lang.Exception) {
-        when(exception){
-            is NfcInvalidDataException->{
-                //TODO
-            }
-        }
-    }
+
 
     companion object {
         @JvmStatic
