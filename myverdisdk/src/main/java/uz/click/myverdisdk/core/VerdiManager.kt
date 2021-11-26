@@ -1,20 +1,15 @@
 package uz.click.myverdisdk.core
 
-import android.app.Activity
-import android.content.Context
 import android.os.Build
-import android.provider.Settings
+import android.os.Handler
 import android.util.Log
-import com.chuckerteam.chucker.api.ChuckerCollector
-import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.squareup.moshi.Moshi
 import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
-import uz.click.myverdisdk.R
 import uz.click.myverdisdk.core.callbacks.ResponseListener
 import uz.click.myverdisdk.core.errors.AppIdEmptyException
-import uz.click.myverdisdk.core.errors.ArgumentEmptyException
 import uz.click.myverdisdk.core.errors.ServerNotAvailableException
+import uz.click.myverdisdk.core.errors.VerdiNotInitializedException
 import uz.click.myverdisdk.model.info.ModelServiceInfo
 import uz.click.myverdisdk.model.info.ServiceInfo
 import uz.click.myverdisdk.model.request.*
@@ -23,11 +18,10 @@ import uz.click.myverdisdk.util.ErrorUtils
 import uz.click.myverdisdk.util.md5
 import uz.click.myverdisdk.util.toBase64
 import java.io.IOException
-import java.lang.Exception
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class VerdiManager(val context: Context? = null) {
+class VerdiManager(private var applicationHandler: Handler) {
 
     companion object {
         var logs = true
@@ -62,15 +56,6 @@ class VerdiManager(val context: Context? = null) {
         val okhttpClientBuilder = OkHttpClient.Builder()
         okhttpClientBuilder.dispatcher(dispatcher)
         okhttpClientBuilder.addInterceptor(loggingInterceptor())
-        if (context != null)
-            okhttpClientBuilder.addInterceptor(
-                ChuckerInterceptor.Builder(context)
-                    .collector(ChuckerCollector(context))
-                    .maxContentLength(250000L)
-                    .redactHeaders(emptySet())
-                    .alwaysReadResponseBody(false)
-                    .build()
-            )
         okhttpClientBuilder
             .connectTimeout(CONNECT_TIME_OUT, TimeUnit.SECONDS)
             .readTimeout(READ_TIME_OUT, TimeUnit.SECONDS)
@@ -87,13 +72,13 @@ class VerdiManager(val context: Context? = null) {
         return logging
     }
 
-    fun checkAppId(activity: Activity, listener: ResponseListener<AppIdResponse>) {
-        if (VerdiUser.config.appId.isEmpty()) {
-            listener.onFailure(AppIdEmptyException(activity.getString(R.string.AppIdNotExist)))
+    private fun checkAppId(listener: ResponseListener<Any>) {
+        if (Verdi.config.appId.isEmpty()) {
+            listener.onFailure(AppIdEmptyException())
             return
         }
         val appIdRequest = AppIdRequest(
-            VerdiUser.config.appId,
+            Verdi.config.appId,
             UUID.randomUUID().toString()
         )
         val adapter = moshi.adapter<AppIdRequest>(AppIdRequest::class.java)
@@ -107,30 +92,32 @@ class VerdiManager(val context: Context? = null) {
             .build()
         okClient.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
-                listener.onFailure(e)
+                applicationHandler.post {
+                    listener.onFailure(e)
+                }
             }
 
             override fun onResponse(call: Call, response: Response) {
-                if (response.isSuccessful) {
-                    if (response.body() == null) {
-                        listener.onFailure(
-                            ServerNotAvailableException(
-                                response.code(),
-                                response.message()
+                applicationHandler.post {
+                    if (response.isSuccessful) {
+                        if (response.body() == null) {
+                            listener.onFailure(
+                                ServerNotAvailableException(
+                                    response.code(),
+                                    response.message()
+                                )
                             )
-                        )
-                        return
-                    }
+                        }
 
-                    response.body()?.let {
+                        response.body()?.let {
 
-                        val initialResponse =
-                            moshi.adapter<AppIdResponse>(AppIdResponse::class.java)
-                                .fromJson(it.string())
-                        activity.runOnUiThread {
+                            val initialResponse =
+                                moshi.adapter<AppIdResponse>(AppIdResponse::class.java)
+                                    .fromJson(it.string())
                             when (initialResponse?.code) {
                                 0 -> {
-                                    listener.onSuccess(initialResponse)
+                                    Verdi.isAppIdAvailable = true
+                                    listener.onSuccess(Any())
                                 }
                                 else -> {
                                     listener.onFailure(
@@ -142,42 +129,57 @@ class VerdiManager(val context: Context? = null) {
                                 }
                             }
                         }
-                    }
 
-                } else {
-                    listener.onFailure(
-                        ServerNotAvailableException(response.code(), response.message())
-                    )
+                    } else {
+                        listener.onFailure(
+                            ServerNotAvailableException(response.code(), response.message())
+                        )
+                    }
                 }
             }
         })
     }
 
-    fun registerPerson(activity: Activity, listener: ResponseListener<RegistrationResponse>) {
-        val config = VerdiUser.config
+    fun registerPerson(listener: ResponseListener<RegistrationResponse>) {
+        if (!Verdi.isAppIdAvailable) {
+            checkAppId(object : ResponseListener<Any> {
+                override fun onFailure(e: Exception) {
+                    listener.onFailure(e)
+                }
 
+                override fun onSuccess(response: Any) {
+                    registerPerson(listener)
+                }
+            })
+            return
+        }
+        val user = Verdi.verdiUser
         val publicKey = UUID.randomUUID().toString()
         val guid = UUID.randomUUID().toString()
-        val deviceID: String =
-            Settings.Secure.getString(activity.contentResolver, Settings.Secure.ANDROID_ID)
+        val deviceID: String = user.deviceId
+        if (deviceID == "") {
+            listener.onFailure(VerdiNotInitializedException())
+            return
+        }
         val signString = md5(
             guid +
-                    config.serialNumber +
-                    config.birthDate +
-                    config.dateOfExpiry +
+                    user.serialNumber +
+                    user.birthDate +
+                    user.dateOfExpiry +
                     publicKey
         )
         val passRequest = PassportRequest(
-            config.serialNumber,
-            config.personalNumber,
-            config.docType,
-            config.birthDate,
-            config.dateOfExpiry
+            user.serialNumber,
+            user.personalNumber,
+            user.docType,
+            user.birthDate,
+            user.dateOfExpiry
         )
         val modelPersonRequest = ModelPersonRequest(passRequest)
         val answere = Answere(1, "OK")
-        val base64Pass = config.imageFaceBase?.toBase64()
-        val personPhoto = ModelPersonPhotoRequest(answere, config.base64Image, base64Pass)
+        val base64Pass = user.imageFaceBase?.toBase64()
+        Log.d("Base64ImageTag", base64Pass.toString())
+        val personPhoto = ModelPersonPhotoRequest(answere, base64Pass, base64Pass)
         val model = Build.MODEL
         val modelMobileData =
             ModelMobileData(
@@ -191,16 +193,17 @@ class VerdiManager(val context: Context? = null) {
         val modelServiceInfo = ModelServiceInfo()
         modelServiceInfo.serviceInfo = serviceInfo
         val passportRequest = PassportInfoRequest(
+            appId = Verdi.config.appId,
             requestGuid = guid,
-            modelPersonPassport = modelPersonRequest,
-            modelPersonPhoto = personPhoto,
-            modelServiceInfo = modelServiceInfo,
             signString = signString,
             clientPubKey = publicKey,
             modelMobileData = modelMobileData,
-            appId = VerdiUser.config.appId
+            modelPersonPassport = modelPersonRequest,
+            modelPersonPhoto = personPhoto,
+            modelServiceInfo = modelServiceInfo
         )
-        Log.d("RequestTag",
+        Log.d(
+            "RequestTag",
             moshi.adapter<PassportInfoRequest>(PassportInfoRequest::class.java)
                 .toJson(passportRequest)
         )
@@ -216,30 +219,33 @@ class VerdiManager(val context: Context? = null) {
 
         okClient.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
-                listener.onFailure(e)
+                applicationHandler.post {
+                    listener.onFailure(e)
+                }
             }
 
             override fun onResponse(call: Call, response: Response) {
-                if (response.isSuccessful) {
-                    if (response.body() == null) {
-                        listener.onFailure(
-                            ServerNotAvailableException(
-                                response.code(),
-                                response.message()
+                applicationHandler.post {
+                    if (response.isSuccessful) {
+                        if (response.body() == null) {
+                            listener.onFailure(
+                                ServerNotAvailableException(
+                                    response.code(),
+                                    response.message()
+                                )
                             )
-                        )
-                        return
-                    }
+                        }
 
-                    response.body()?.let {
-                        val initialResponse =
-                            moshi.adapter<RegistrationResponse>(RegistrationResponse::class.java)
-                                .fromJson(it.string())
-                        Log.d("TagCheck",
-                            moshi.adapter<RegistrationResponse>(RegistrationResponse::class.java)
-                                .toJson(initialResponse)
-                        )
-                        activity.runOnUiThread {
+                        response.body()?.let {
+                            val initialResponse =
+                                moshi.adapter<RegistrationResponse>(RegistrationResponse::class.java)
+                                    .fromJson(it.string())
+                            Log.d(
+                                "TagCheck",
+                                moshi.adapter<RegistrationResponse>(RegistrationResponse::class.java)
+                                    .toJson(initialResponse)
+                            )
+
                             when (initialResponse?.code) {
                                 0 -> {
                                     listener.onSuccess(initialResponse)
@@ -254,43 +260,70 @@ class VerdiManager(val context: Context? = null) {
                                 }
                             }
                         }
-                    }
 
-                } else {
-                    listener.onFailure(
-                        ServerNotAvailableException(response.code(), response.message())
-                    )
+                    } else {
+                        listener.onFailure(
+                            ServerNotAvailableException(response.code(), response.message())
+                        )
+                    }
                 }
+
             }
         })
 
     }
 
 
-    fun verifyPerson(activity: Activity, listener: ResponseListener<RegistrationResponse>) {
-        val deviceSerialNumber: String = VerdiUser.config.serialNumber
+    fun verifyPerson(listener: ResponseListener<RegistrationResponse>) {
+        if (!Verdi.isAppIdAvailable) {
+            checkAppId(object : ResponseListener<Any> {
+                override fun onFailure(e: Exception) {
+                    listener.onFailure(e)
+                }
+
+                override fun onSuccess(response: Any) {
+                    registerPerson(listener)
+                }
+            })
+            return
+        }
+        val deviceSerialNumber: String = Verdi.verdiUser.serialNumber
         val guid = UUID.randomUUID().toString()
-        val deviceID: String? =
-            Settings.Secure.getString(activity.contentResolver, Settings.Secure.ANDROID_ID)
+        val deviceID: String =
+            Verdi.verdiUser.deviceId
+        if (deviceID == "") {
+            listener.onFailure(VerdiNotInitializedException())
+            return
+        }
+        val signString = md5(buildString {
+            guid + deviceSerialNumber + deviceID + "dataSource.getPubKey()"
+        })
         val personPhoto = ModelPersonPhotoRequest(null, null, "")
+
         val model = Build.MODEL
+
         val modelMobileData =
             ModelMobileData(model, null, deviceID, null)
+
         val serviceInfo = ServiceInfo()
         serviceInfo.scannerSerial = deviceSerialNumber
+
         val modelServiceInfo = ModelServiceInfo()
         modelServiceInfo.serviceInfo = serviceInfo
+
         val passportRequest = PassportInfoRequest(
-            guid,
-            null,
-            personPhoto,
-            modelServiceInfo,
-            "",
-            guid,
-            modelMobileData
+            appId = Verdi.config.appId,
+            requestGuid = guid,
+            signString = signString,
+            clientPubKey = UUID.randomUUID().toString(),
+            modelPersonPassport = null,
+            modelPersonPhoto = personPhoto,
+            modelServiceInfo = modelServiceInfo,
+            modelMobileData = modelMobileData
         )
 
-        Log.d("RequestTag",
+        Log.d(
+            "RequestTag",
             moshi.adapter<PassportInfoRequest>(PassportInfoRequest::class.java)
                 .toJson(passportRequest)
         )
@@ -306,50 +339,54 @@ class VerdiManager(val context: Context? = null) {
 
         okClient.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
-                listener.onFailure(e)
+                applicationHandler.post {
+                    listener.onFailure(e)
+                }
             }
 
             override fun onResponse(call: Call, response: Response) {
-                if (response.isSuccessful) {
-                    if (response.body() == null) {
-                        listener.onFailure(
-                            ServerNotAvailableException(
-                                response.code(),
-                                response.message()
+                applicationHandler.post {
+                    if (response.isSuccessful) {
+                        if (response.body() == null) {
+                            listener.onFailure(
+                                ServerNotAvailableException(
+                                    response.code(),
+                                    response.message()
+                                )
                             )
-                        )
-                        return
-                    }
+                        }
 
-                    response.body()?.let {
-                        val initialResponse =
-                            moshi.adapter<RegistrationResponse>(RegistrationResponse::class.java)
-                                .fromJson(it.string())
-                        Log.d("TagCheck",
-                            moshi.adapter<RegistrationResponse>(RegistrationResponse::class.java)
-                                .toJson(initialResponse)
-                        )
-                        activity.runOnUiThread {
-                            when (initialResponse?.code) {
-                                0 -> {
-                                    listener.onSuccess(initialResponse)
-                                }
-                                else -> {
-                                    listener.onFailure(
-                                        ErrorUtils.getException(
-                                            initialResponse?.code,
-                                            initialResponse?.message
+                        response.body()?.let {
+                            val initialResponse =
+                                moshi.adapter<RegistrationResponse>(RegistrationResponse::class.java)
+                                    .fromJson(it.string())
+                            Log.d(
+                                "TagCheck",
+                                moshi.adapter<RegistrationResponse>(RegistrationResponse::class.java)
+                                    .toJson(initialResponse)
+                            )
+                            applicationHandler.post {
+                                when (initialResponse?.code) {
+                                    0 -> {
+                                        listener.onSuccess(initialResponse)
+                                    }
+                                    else -> {
+                                        listener.onFailure(
+                                            ErrorUtils.getException(
+                                                initialResponse?.code,
+                                                initialResponse?.message
+                                            )
                                         )
-                                    )
+                                    }
                                 }
                             }
                         }
-                    }
 
-                } else {
-                    listener.onFailure(
-                        ServerNotAvailableException(response.code(), response.message())
-                    )
+                    } else {
+                        listener.onFailure(
+                            ServerNotAvailableException(response.code(), response.message())
+                        )
+                    }
                 }
             }
         })
