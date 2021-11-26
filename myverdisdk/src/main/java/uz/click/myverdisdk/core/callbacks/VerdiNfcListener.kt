@@ -4,6 +4,7 @@ import java.io.Serializable
 import java.lang.Exception
 
 interface VerdiNfcListener : Serializable {
-    fun onNfcSuccess()
+    fun onNfcChecked(isNfcAvailable : Boolean, isNfcEnabled : Boolean)
     fun onNfcError(exception: Exception)
+    fun onNfcScanned()
 }

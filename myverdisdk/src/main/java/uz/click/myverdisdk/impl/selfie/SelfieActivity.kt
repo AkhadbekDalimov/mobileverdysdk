@@ -21,7 +21,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import uz.click.myverdisdk.R
-import uz.click.myverdisdk.core.VerdiUser
+import uz.click.myverdisdk.core.Verdi
 import uz.click.myverdisdk.util.rotateImage
 import uz.click.myverdisdk.util.toBitmap
 import java.util.concurrent.ExecutorService
@@ -194,10 +194,10 @@ class SelfieActivity : AppCompatActivity() {
                 override fun onCaptureSuccess(image: ImageProxy) {
                     val bitmap = image.toBitmap()
                     if (bitmap != null) {
-                        VerdiUser.config.imageFaceBase =
+                        Verdi.verdiUser.imageFaceBase =
                             bitmap.rotateImage(image.imageInfo.rotationDegrees.toFloat())
                         bitmap.rotateImage(image.imageInfo.rotationDegrees.toFloat())?.let {
-                            VerdiUser.config.selfieListener?.onSelfieSuccess(it)
+                            Verdi.verdiListener?.onSuccess()
                         }
                         finish()
                     }

@@ -7,7 +7,6 @@ import android.util.Log
 import android.view.View
 import android.widget.CompoundButton
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
@@ -19,7 +18,7 @@ import com.google.mlkit.common.MlKitException
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import org.jmrtd.lds.icao.MRZInfo
 import uz.click.myverdisdk.R
-import uz.click.myverdisdk.core.VerdiUser
+import uz.click.myverdisdk.core.Verdi
 import uz.click.myverdisdk.model.DocType
 import uz.click.myverdisdk.util.DateUtil
 import uz.click.myverdisdk.util.PublicMethods
@@ -233,16 +232,17 @@ class ScanActivity : AppCompatActivity(),
     override fun onSuccess(mrzInfo: MRZInfo?) {
         Log.i(TAG, "onSuccess")
         mrzInfo?.let {
-            VerdiUser.config.serialNumber = mrzInfo.documentNumber
-            VerdiUser.config.dateOfExpiry = DateUtil.convertFromMrzDate(mrzInfo.dateOfExpiry)
-            VerdiUser.config.birthDate = DateUtil.convertFromMrzDate(mrzInfo.dateOfBirth)
-            VerdiUser.config.personalNumber = mrzInfo.personalNumber
-            VerdiUser.config.docType = if (isQrCode) {
+            val verdiUser = Verdi.verdiUser
+            verdiUser.serialNumber = mrzInfo.documentNumber
+            verdiUser.dateOfExpiry = DateUtil.convertFromMrzDate(mrzInfo.dateOfExpiry)
+            verdiUser.birthDate = DateUtil.convertFromMrzDate(mrzInfo.dateOfBirth)
+            verdiUser.personalNumber = mrzInfo.personalNumber
+            verdiUser.docType = if (isQrCode) {
                 DocType.ID_CARD
             } else {
                 DocType.PASSPORT
             }
-            VerdiUser.config.scanListener?.onScanSuccess()
+            Verdi.verdiListener?.onSuccess()
         }
         finish()
     }
