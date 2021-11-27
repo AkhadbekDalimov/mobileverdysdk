@@ -35,11 +35,11 @@ class VerdiManager(private var applicationHandler: Handler) {
         const val VERDI_BASE_URL_TEST = "https://testapi.digid.uz:8082/"
         const val APP_ID_VERDI = "3f4b68e09a319cf4"
         const val APP_ID_CLICK = "P8g13lFKmXo8TlFO"
-        const val REQUEST_CHECK_APP_ID = "digid-service/mobile/data/${LANGUAGE}/checkAppId"
+        const val REQUEST_CHECK_APP_ID = "mobile/data/${LANGUAGE}/checkAppId"
         const val REQUEST_SEND_PHONE = "digid-service/phone/${LANGUAGE}/send"
         const val REQUEST_CHECK_PHONE = "digid-service/phone/${LANGUAGE}/check"
-        const val REQUEST_REGISTRATION = "digid-service/pinpp/${LANGUAGE}/registration"
-        const val REQUEST_VERIFICATION = "digid-service/pinpp/${LANGUAGE}/verification"
+        const val REQUEST_REGISTRATION = "pinpp/${LANGUAGE}/registration"
+        const val REQUEST_VERIFICATION = "pinpp/${LANGUAGE}/verification"
 
         const val AUTH_CHECK_APP_ID = "Basic dGVzdHJlYWQ6dGVzdHBhc3M="
         const val AUTH_PHONE = "Basic ZGlnaWQ6ZGlnaWQyMDE5"
@@ -84,7 +84,7 @@ class VerdiManager(private var applicationHandler: Handler) {
         val adapter = moshi.adapter<AppIdRequest>(AppIdRequest::class.java)
         val body = RequestBody.create(JSON, adapter.toJson(appIdRequest))
         val request = Request.Builder()
-            .url(VERDI_BASE_URL + REQUEST_CHECK_APP_ID)
+            .url(VERDI_BASE_URL_TEST + REQUEST_CHECK_APP_ID)
             .addHeader("Accept", "application/json")
             .addHeader("Content-type", "application/json")
             .addHeader("Authorization", AUTH_CHECK_APP_ID)
@@ -210,10 +210,9 @@ class VerdiManager(private var applicationHandler: Handler) {
         val adapter = moshi.adapter<PassportInfoRequest>(PassportInfoRequest::class.java)
         val body = RequestBody.create(JSON, adapter.toJson(passportRequest))
         val request = Request.Builder()
-            .url(VERDI_BASE_URL + REQUEST_REGISTRATION)
+            .url(VERDI_BASE_URL_TEST + REQUEST_REGISTRATION)
             .addHeader("Accept", "application/json")
             .addHeader("Content-type", "application/json")
-            .addHeader("Authorization", AUTH_PINPP)
             .post(body)
             .build()
 
@@ -330,10 +329,9 @@ class VerdiManager(private var applicationHandler: Handler) {
         val adapter = moshi.adapter<PassportInfoRequest>(PassportInfoRequest::class.java)
         val body = RequestBody.create(JSON, adapter.toJson(passportRequest))
         val request = Request.Builder()
-            .url(VERDI_BASE_URL + REQUEST_VERIFICATION)
+            .url(VERDI_BASE_URL_TEST + REQUEST_VERIFICATION)
             .addHeader("Accept", "application/json")
             .addHeader("Content-type", "application/json")
-            .addHeader("Authorization", AUTH_PINPP)
             .post(body)
             .build()
 

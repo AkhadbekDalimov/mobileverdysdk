@@ -110,7 +110,6 @@ class NfcActivity : AppCompatActivity() {
             verdiUser.base64Image = it.faceImageBase64
             verdiUser.docType = it.docType ?: ""
             verdiUser.personalNumber = it.personalNumber ?: ""
-            verdiUser.birthDate = it.birthDate ?: ""
             verdiUser.serialNumber = it.serialNumber ?: ""
             Verdi.verdiListener?.onSuccess()
             finish()

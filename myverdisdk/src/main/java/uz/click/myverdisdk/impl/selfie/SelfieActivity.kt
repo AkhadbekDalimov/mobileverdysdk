@@ -139,7 +139,7 @@ class SelfieActivity : AppCompatActivity() {
         // ImageCapture
         imageCapture = ImageCapture.Builder()
             .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
-            .setTargetResolution(Size(1920, 1080))
+            .setTargetResolution(Size(1080, 1920))
             .setTargetRotation(rotation)
             .build()
 
