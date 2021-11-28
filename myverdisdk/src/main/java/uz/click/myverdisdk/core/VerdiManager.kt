@@ -247,6 +247,8 @@ class VerdiManager(private var applicationHandler: Handler) {
 
                             when (initialResponse?.code) {
                                 0 -> {
+                                    VerdiPreferences.clientPublicKey = publicKey
+                                    VerdiPreferences.deviceSerialNumber = initialResponse.response?.clientData?.device?.serialNumber ?: ""
                                     listener.onSuccess(initialResponse)
                                 }
                                 else -> {
@@ -286,7 +288,7 @@ class VerdiManager(private var applicationHandler: Handler) {
             })
             return
         }
-        val deviceSerialNumber: String = Verdi.verdiUser.serialNumber
+        val deviceSerialNumber: String = VerdiPreferences.deviceSerialNumber
         val guid = UUID.randomUUID().toString()
         val deviceID: String =
             Verdi.verdiUser.deviceId
@@ -295,7 +297,7 @@ class VerdiManager(private var applicationHandler: Handler) {
             return
         }
         val signString = md5(buildString {
-            guid + deviceSerialNumber + deviceID + "dataSource.getPubKey()"
+            guid + deviceSerialNumber + deviceID + VerdiPreferences.clientPublicKey
         })
         val personPhoto = ModelPersonPhotoRequest(null, null, "")
 
@@ -314,7 +316,7 @@ class VerdiManager(private var applicationHandler: Handler) {
             appId = Verdi.config.appId,
             requestGuid = guid,
             signString = signString,
-            clientPubKey = UUID.randomUUID().toString(),
+            clientPubKey = VerdiPreferences.clientPublicKey,
             modelPersonPassport = null,
             modelPersonPhoto = personPhoto,
             modelServiceInfo = modelServiceInfo,
