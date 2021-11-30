@@ -232,7 +232,7 @@ class ScanActivity : AppCompatActivity(),
     override fun onSuccess(mrzInfo: MRZInfo?) {
         Log.i(TAG, "onSuccess")
         mrzInfo?.let {
-            val verdiUser = Verdi.verdiUser
+            val verdiUser = Verdi.user
             verdiUser.serialNumber = mrzInfo.documentNumber
             verdiUser.dateOfExpiry = DateUtil.convertFromMrzDate(mrzInfo.dateOfExpiry)
             verdiUser.birthDate = DateUtil.convertFromMrzDate(mrzInfo.dateOfBirth)
@@ -242,7 +242,7 @@ class ScanActivity : AppCompatActivity(),
             } else {
                 DocType.PASSPORT
             }
-            Verdi.verdiListener?.onSuccess()
+            Verdi.stateListener?.onSuccess()
         }
         finish()
     }

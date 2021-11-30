@@ -22,6 +22,10 @@ import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import uz.click.myverdisdk.R
 import uz.click.myverdisdk.core.Verdi
+import uz.click.myverdisdk.core.callbacks.ResponseListener
+import uz.click.myverdisdk.impl.RegisterRequestActivity
+import uz.click.myverdisdk.model.info.PersonResult
+import uz.click.myverdisdk.model.request.RegistrationResponse
 import uz.click.myverdisdk.util.rotateImage
 import uz.click.myverdisdk.util.toBitmap
 import java.util.concurrent.ExecutorService
@@ -62,6 +66,12 @@ class SelfieActivity : AppCompatActivity() {
             activity: Activity,
         ): Intent {
             return Intent(activity, SelfieActivity::class.java)
+        }
+
+        fun getInstanceFromNfcActivity(activity: Activity): Intent {
+            val intent = Intent(activity, SelfieActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+            return intent
         }
     }
 
@@ -183,7 +193,6 @@ class SelfieActivity : AppCompatActivity() {
 
     @SuppressLint("RestrictedApi")
     private fun savePictureToMemory() {
-        // 2
         imageCapture?.takePicture(
             CameraXExecutors.mainThreadExecutor(),
             object : ImageCapture.OnImageCapturedCallback() {
@@ -194,17 +203,19 @@ class SelfieActivity : AppCompatActivity() {
                 override fun onCaptureSuccess(image: ImageProxy) {
                     val bitmap = image.toBitmap()
                     if (bitmap != null) {
-                        Verdi.verdiUser.imageFaceBase =
+                        Verdi.user.imageFaceBase =
                             bitmap.rotateImage(image.imageInfo.rotationDegrees.toFloat())
                         bitmap.rotateImage(image.imageInfo.rotationDegrees.toFloat())?.let {
-                            Verdi.verdiListener?.onSuccess()
+                            Verdi.stateListener?.onSuccess()
                         }
+                        startActivity(RegisterRequestActivity.getInstance(this@SelfieActivity))
                         finish()
                     }
                     super.onCaptureSuccess(image)
                 }
             })
     }
+
 
     private fun updateCameraSwitchButton() {
         try {

@@ -3,19 +3,19 @@ package uz.click.myverdisdk.model.info
 import android.os.Parcel
 import android.os.Parcelable
 import com.squareup.moshi.Json
-import uz.click.myverdisdk.model.info.LivenessAnswere
+import uz.click.myverdisdk.core.Verdi
 import uz.click.myverdisdk.model.request.Answere
 import uz.click.myverdisdk.data.model.response.ClientResponse
 
-
-class ModelPersonAnswere():Parcelable{
-    val answere: Answere? = null
+class PersonResult() : Parcelable {
+    @field:Json(name = "answere")
+    val answer: Answere? = null
 
     @field:Json(name = "DocumentReadingTime")
     val documentReadingTime: Long = 0
 
     @field:Json(name = "ServiceAnswereTime")
-    val serviceAnswereTime: Long = 0
+    val serviceAnswerTime: Long = 0
 
     @field:Json(name = "RequestGuid")
     val requestGuid: String? = null
@@ -51,7 +51,7 @@ class ModelPersonAnswere():Parcelable{
     var modelPersonPhoto: ModelPersonPhoto? = null
 
     @field:Json(name = "LivenessAnswere")
-    val livenessAnswere: LivenessAnswere? = null
+    val livenessAnswer: LivenessAnswere? = null
 
     @field:Json(name = "SignString")
     val signString: String? = null
@@ -61,7 +61,8 @@ class ModelPersonAnswere():Parcelable{
 
     constructor(parcel: Parcel) : this() {
         person = parcel.readParcelable(ModelPerson::class.java.classLoader)
-        modelPersonPassport = parcel.readParcelable(ModelPersonPassportAnswere::class.java.classLoader)
+        modelPersonPassport =
+            parcel.readParcelable(ModelPersonPassportAnswere::class.java.classLoader)
         modelPersonPhoto = parcel.readParcelable(ModelPersonPhoto::class.java.classLoader)
     }
 
@@ -75,12 +76,14 @@ class ModelPersonAnswere():Parcelable{
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<ModelPersonAnswere> {
-        override fun createFromParcel(parcel: Parcel): ModelPersonAnswere {
-            return ModelPersonAnswere(parcel)
+    companion object CREATOR : Parcelable.Creator<PersonResult> {
+
+
+        override fun createFromParcel(parcel: Parcel): PersonResult {
+            return PersonResult(parcel)
         }
 
-        override fun newArray(size: Int): Array<ModelPersonAnswere?> {
+        override fun newArray(size: Int): Array<PersonResult?> {
             return arrayOfNulls(size)
         }
     }

@@ -11,9 +11,12 @@
 
     <application>
         <activity
+            android:name=".impl.RegisterRequestActivity"
+            android:exported="true" />
+        <activity
             android:name=".impl.selfie.SelfieActivity"
             android:exported="true"
-            android:theme="@style/Base.Theme.App"/>
+            android:theme="@style/Base.Theme.App" />
         <activity
             android:name=".impl.scan.ScanActivity"
             android:exported="true"

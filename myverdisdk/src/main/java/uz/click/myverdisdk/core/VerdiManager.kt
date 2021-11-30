@@ -11,6 +11,7 @@ import uz.click.myverdisdk.core.errors.AppIdEmptyException
 import uz.click.myverdisdk.core.errors.ServerNotAvailableException
 import uz.click.myverdisdk.core.errors.VerdiNotInitializedException
 import uz.click.myverdisdk.model.info.ModelServiceInfo
+import uz.click.myverdisdk.model.info.PersonResult
 import uz.click.myverdisdk.model.info.ServiceInfo
 import uz.click.myverdisdk.model.request.*
 import uz.click.myverdisdk.model.response.AppIdResponse
@@ -29,7 +30,6 @@ class VerdiManager(private var applicationHandler: Handler) {
         private const val READ_TIME_OUT: Long = 10 * 1000 // 10 second
         private const val WRITE_TIME_OUT: Long = 10 * 1000 // 10 second
         private val JSON = MediaType.parse("application/json; charset=utf-8")
-
         const val LANGUAGE = "ru"
         const val VERDI_BASE_URL = "https://api.digid.uz:8080/"
         const val VERDI_BASE_URL_TEST = "https://testapi.digid.uz:8082/"
@@ -153,7 +153,7 @@ class VerdiManager(private var applicationHandler: Handler) {
             })
             return
         }
-        val user = Verdi.verdiUser
+        val user = Verdi.user
         val publicKey = UUID.randomUUID().toString()
         val guid = UUID.randomUUID().toString()
         val deviceID: String = user.deviceId
@@ -178,8 +178,9 @@ class VerdiManager(private var applicationHandler: Handler) {
         val modelPersonRequest = ModelPersonRequest(passRequest)
         val answere = Answere(1, "OK")
         val base64Pass = user.imageFaceBase?.toBase64()
-        Log.d("Base64ImageTag", base64Pass.toString())
-        val personPhoto = ModelPersonPhotoRequest(answere, base64Pass, base64Pass)
+        Log.d("Base64ImageTag", "ImageFaceBase: "  + base64Pass.toString())
+        Log.d("Base64ImageTag", "UserBase64: "  + user.base64Image)
+        val personPhoto = ModelPersonPhotoRequest(answere, user.base64Image, base64Pass)
         val model = Build.MODEL
         val modelMobileData =
             ModelMobileData(
@@ -247,11 +248,13 @@ class VerdiManager(private var applicationHandler: Handler) {
 
                             when (initialResponse?.code) {
                                 0 -> {
+                                    Verdi.result = initialResponse.response ?: PersonResult()
                                     VerdiPreferences.clientPublicKey = publicKey
                                     VerdiPreferences.deviceSerialNumber = initialResponse.response?.clientData?.device?.serialNumber ?: ""
                                     listener.onSuccess(initialResponse)
                                 }
                                 else -> {
+                                    Verdi.result = initialResponse?.response ?: PersonResult()
                                     listener.onFailure(
                                         ErrorUtils.getException(
                                             initialResponse?.code,
@@ -291,7 +294,7 @@ class VerdiManager(private var applicationHandler: Handler) {
         val deviceSerialNumber: String = VerdiPreferences.deviceSerialNumber
         val guid = UUID.randomUUID().toString()
         val deviceID: String =
-            Verdi.verdiUser.deviceId
+            Verdi.user.deviceId
         if (deviceID == "") {
             listener.onFailure(VerdiNotInitializedException())
             return

@@ -3,6 +3,7 @@ package uz.click.myverdisdk.model.info
 import android.os.Parcel
 import android.os.Parcelable
 import com.squareup.moshi.Json
+import uz.click.myverdisdk.core.Verdi
 
 class ModelPerson() : Parcelable {
     @field:Json(name = "RequestGuid")
@@ -228,7 +229,23 @@ class ModelPerson() : Parcelable {
         return 0
     }
 
+    fun getPersonPairList(): List<Pair<String, String>> {
+        val pairList = ArrayList<Pair<String, String>>()
+        val fields = ModelPerson::class.java.declaredFields
+        fields.forEach { field ->
+            field.isAccessible = true
+            val person = Verdi.result.person
+            if (person != null) {
+                val value = field.get(person)
+                if (value != null && value != "") {
+                    pairList.add(Pair(field.name, value.toString()))
+                }
+            }
+        }
+        return pairList
+    }
     companion object CREATOR : Parcelable.Creator<ModelPerson> {
+
         override fun createFromParcel(parcel: Parcel): ModelPerson {
             return ModelPerson(parcel)
         }

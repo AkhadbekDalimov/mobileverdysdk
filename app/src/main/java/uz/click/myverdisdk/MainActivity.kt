@@ -21,5 +21,7 @@ class MainActivity : AppCompatActivity() {
             binding.vpSteps.currentItem = it
             binding.stepperNavigation.goToSelectedStep(it)
         })
+
+
     }
 }

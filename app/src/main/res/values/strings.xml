@@ -8,4 +8,9 @@
     <string name="DateOfBirth">Date of birth</string>
     <string name="DateOfExpiry">Date of expiry</string>
     <string name="PNFL">PNFL</string>
+
+    <string name="liveness">Liveness score:</string>
+    <string name="similarity">Similarity score:</string>
+    <string name="register_success">Congratulations, you have been identified. !</string>
+    <string name="register_error">you are not authenticated!!!</string>
 </resources>

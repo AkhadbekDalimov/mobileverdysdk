@@ -1,6 +1,7 @@
 package uz.click.myverdisdk.util
 
 import android.util.Log
+import uz.click.myverdisdk.core.Verdi
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -61,6 +62,12 @@ class DocumentInputValidation {
                     return documentInputType.text.length == 10 && inputDate.after(Calendar.getInstance().time) && isFormatValid
                 }
             }
+        }
+
+        fun isPassportInfoValid(): Boolean {
+            return isInputValid(DocumentInputType.PASSPORT((Verdi.user.serialNumber)))
+                    && isInputValid(DocumentInputType.BIRTHDAY((Verdi.user.birthDate)))
+                    && isInputValid(DocumentInputType.EXPIRATION((Verdi.user.dateOfExpiry)))
         }
     }
 }

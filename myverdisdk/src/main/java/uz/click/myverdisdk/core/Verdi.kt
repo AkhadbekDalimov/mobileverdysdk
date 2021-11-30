@@ -8,13 +8,16 @@ import android.os.Handler
 import android.provider.Settings
 import androidx.annotation.Keep
 import uz.click.myverdisdk.core.callbacks.*
-import uz.click.myverdisdk.core.errors.NfcInvalidDataException
+import uz.click.myverdisdk.core.errors.PassportInfoEmptyException
+import uz.click.myverdisdk.core.errors.PassportInfoInvalidException
 import uz.click.myverdisdk.core.errors.VerdiNotInitializedException
 import uz.click.myverdisdk.impl.nfc.NfcActivity
 import uz.click.myverdisdk.impl.scan.ScanActivity
 import uz.click.myverdisdk.impl.selfie.SelfieActivity
+import uz.click.myverdisdk.model.info.PersonResult
 import uz.click.myverdisdk.model.request.RegistrationResponse
 import uz.click.myverdisdk.util.DateUtil
+import uz.click.myverdisdk.util.DocumentInputValidation
 
 /**
  * @author Azamat on 27/09/21
@@ -28,18 +31,20 @@ object Verdi {
 
     var isAppIdAvailable: Boolean = false
 
-    var verdiListener: VerdiListener? = null
+    var stateListener: VerdiListener? = null
 
-    var verdiNfcListener : VerdiNfcListener? = null
+    var registerListener: VerdiRegisterListener? = null
 
-    var verdiUser: VerdiUser = VerdiUser()
+    var user: VerdiUser = VerdiUser()
 
-    private var nfcAdapter : NfcAdapter? = null
+    var result = PersonResult()
 
-    val isNfcAvailable : Boolean
+    private var nfcAdapter: NfcAdapter? = null
+
+    val isNfcAvailable: Boolean
         get() = nfcAdapter != null
 
-    val isNfcEnabled : Boolean
+    val isNfcEnabled: Boolean
         get() = nfcAdapter?.isEnabled == true
 
     @[JvmStatic Keep]
@@ -48,9 +53,10 @@ object Verdi {
         config: VerdiUserConfig
     ) {
         this.config = config
+        VerdiPreferences.init(applicationContext)
         val applicationHandler = Handler(applicationContext.mainLooper)
         verdiManager = VerdiManager(applicationHandler)
-        verdiUser.deviceId = Settings.Secure.getString(
+        user.deviceId = Settings.Secure.getString(
             applicationContext.contentResolver,
             Settings.Secure.ANDROID_ID
         )
@@ -63,33 +69,55 @@ object Verdi {
         verdiListener: VerdiListener,
         isQrCodeScan: Boolean = false
     ) {
-        this.verdiListener = verdiListener
+        this.stateListener = verdiListener
         activity.startActivity(ScanActivity.getInstance(activity, isQrCodeScan))
     }
 
     @[JvmStatic Keep]
-    fun openSelfieActivity(activity: Activity, listener : VerdiListener) {
-        this.verdiListener = listener
+    fun openSelfieActivity(activity: Activity) {
         activity.startActivity(SelfieActivity.getInstance(activity))
     }
 
+    /**
+     * It will return NfcInvalidDataException onError method if Passport info is Empty
+     * @param Activity
+     * @param VerdiListener
+     */
     @[JvmStatic Keep]
-    fun openNfcScanActivity(activity: Activity, listener : VerdiNfcListener) {
-        if (verdiUser.serialNumber.isEmpty()
-            || verdiUser.birthDate.isEmpty()
-            || verdiUser.dateOfExpiry.isEmpty()
+    fun proceedNfcAndSelfie(
+        activity: Activity,
+        passportSerialNumber: String,
+        birthDate: String,
+        dateOfExpiry: String,
+        listener: VerdiRegisterListener
+    ) {
+        this.registerListener = listener
+        if (passportSerialNumber.isEmpty()
+            || birthDate.isEmpty()
+            || dateOfExpiry.isEmpty()
         ) {
-            listener.onNfcError(NfcInvalidDataException())
+            listener.onRegisterError(PassportInfoEmptyException())
             return
         }
-        this.verdiNfcListener = listener
-        activity.startActivity(
-            NfcActivity.getInstance(
-                activity, verdiUser.serialNumber,
-                DateUtil.changeFormatYYDDMM(verdiUser.birthDate),
-                DateUtil.changeFormatYYDDMM(verdiUser.dateOfExpiry)
+        user.serialNumber = passportSerialNumber
+        user.birthDate = birthDate
+        user.dateOfExpiry = dateOfExpiry
+
+        if (!DocumentInputValidation.isPassportInfoValid()) {
+            listener.onRegisterError(PassportInfoInvalidException())
+            return
+        }
+        if (!isNfcAvailable) {
+            openSelfieActivity(activity)
+        } else {
+            activity.startActivity(
+                NfcActivity.getInstance(
+                    activity, user.serialNumber,
+                    DateUtil.changeFormatYYDDMM(user.birthDate),
+                    DateUtil.changeFormatYYDDMM(user.dateOfExpiry)
+                )
             )
-        )
+        }
     }
 
     @[JvmStatic Keep]

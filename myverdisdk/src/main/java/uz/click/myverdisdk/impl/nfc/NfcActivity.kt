@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.airbnb.lottie.LottieAnimationView
 import uz.click.myverdisdk.R
 import uz.click.myverdisdk.core.Verdi
+import uz.click.myverdisdk.impl.selfie.SelfieActivity
 
 class NfcActivity : AppCompatActivity() {
 
@@ -105,13 +106,13 @@ class NfcActivity : AppCompatActivity() {
 
         viewModel.completeRead.observe(this, {
             findViewById<View>(R.id.progressBar)?.visibility = View.GONE
-            val verdiUser = Verdi.verdiUser
+            val verdiUser = Verdi.user
             verdiUser.imageFaceBase = it.imageFaceBase
             verdiUser.base64Image = it.faceImageBase64
             verdiUser.docType = it.docType ?: ""
             verdiUser.personalNumber = it.personalNumber ?: ""
             verdiUser.serialNumber = it.serialNumber ?: ""
-            Verdi.verdiListener?.onSuccess()
+            startActivity(SelfieActivity.getInstance(this))
             finish()
         })
     }
