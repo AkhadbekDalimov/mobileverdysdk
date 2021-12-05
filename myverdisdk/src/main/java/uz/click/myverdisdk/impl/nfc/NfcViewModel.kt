@@ -7,13 +7,10 @@ import android.nfc.Tag
 import android.nfc.tech.IsoDep
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import io.reactivex.BackpressureStrategy
-import io.reactivex.Flowable
-import io.reactivex.Observable
-import io.reactivex.Observer
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import net.sf.scuba.smartcards.CardService
 import org.jmrtd.BACKey
 import org.jmrtd.BACKeySpec
@@ -59,84 +56,86 @@ class NfcViewModel : ViewModel() {
     }
 
     private fun addInBackground(context: Context, isoDep: IsoDep, bacKey: BACKeySpec) {
-        val a = Observable.create<Float> { emitter ->
-            try {
-                emitter.onNext(0.33f)
-                val cardService = CardService.getInstance(isoDep)
-                cardService.open()
-                val service = PassportService(
-                    cardService,
-                    PassportService.NORMAL_MAX_TRANCEIVE_LENGTH,
-                    PassportService.DEFAULT_MAX_BLOCKSIZE,
-                    false,
-                    true
-                )
-                service.open()
-                val paceSucceeded = false
-                service.sendSelectApplet(paceSucceeded)
-                if (!paceSucceeded) {
-                    try {
-                        service.getInputStream(PassportService.EF_COM).read()
-                    } catch (e: Exception) {
-                        service.doBAC(bacKey)
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                try {
+                    withContext(Dispatchers.Main) {
+                        nextProgress.value = 0.33f
+                    }
+                    val cardService = CardService.getInstance(isoDep)
+                    cardService.open()
+                    val service = PassportService(
+                        cardService,
+                        PassportService.NORMAL_MAX_TRANCEIVE_LENGTH,
+                        PassportService.DEFAULT_MAX_BLOCKSIZE,
+                        false,
+                        true
+                    )
+                    service.open()
+                    val paceSucceeded = false
+                    service.sendSelectApplet(paceSucceeded)
+                    if (!paceSucceeded) {
+                        try {
+                            kotlin.runCatching {
+                                service.getInputStream(PassportService.EF_COM).read()
+                            }.onFailure {
+                                service.doBAC(bacKey)
+                            }
+                        } catch (e: Exception) {
+                            service.doBAC(bacKey)
+                        }
+                    }
+
+                    // -- Personal Details -- //
+                    val dg1In = service.getInputStream(PassportService.EF_DG1)
+                    val dg1File = DG1File(dg1In)
+                    val mrzInfo = dg1File.mrzInfo
+                    person = PersonDetails()
+                    person.name = (
+                            mrzInfo.secondaryIdentifier.replace("<", " ").trim { it <= ' ' })
+                    person.surname = (
+                            mrzInfo.primaryIdentifier.replace("<", " ").trim { it <= ' ' })
+                    person.personalNumber = mrzInfo.personalNumber
+                    person.gender = mrzInfo.gender.toString()
+                    person.serialNumber = mrzInfo.documentNumber
+                    person.nationality = mrzInfo.nationality
+                    if ("I" == mrzInfo.documentCode) {
+                        docType = DocType.ID_CARD
+                    } else if ("P" == mrzInfo.documentCode) {
+                        docType = DocType.PASSPORT
+                    }
+                    withContext(Dispatchers.Main) {
+                        nextProgress.value = 0.66f
+                    }
+                    // -- Face Image -- //
+                    val dg2In = service.getInputStream(PassportService.EF_DG2)
+                    val dg2File = DG2File(dg2In)
+                    val faceInfos = dg2File.faceInfos
+                    val allFaceImageInfos: MutableList<FaceImageInfo> = ArrayList()
+                    for (faceInfo in faceInfos) {
+                        allFaceImageInfos.addAll(faceInfo.faceImageInfos)
+                    }
+                    if (allFaceImageInfos.isNotEmpty()) {
+                        val faceImageInfo = allFaceImageInfos.iterator().next()
+                        val image: Image = ImageUtil.getImage(context, faceImageInfo)
+                        person.faceImage = image.bitmapImage
+                        person.faceImageBase64 = image.base64Image
+                    }
+                    person.docType = docType
+
+                    withContext(Dispatchers.Main) {
+                        nextProgress.value = 1f
+                        completeRead.postValue(person)
+                    }
+
+                } catch (e: Throwable) {
+                    e.printStackTrace()
+                    withContext(Dispatchers.Main) {
+                        errorRead.call()
                     }
                 }
-
-                // -- Personal Details -- //
-                val dg1In = service.getInputStream(PassportService.EF_DG1)
-                val dg1File = DG1File(dg1In)
-                val mrzInfo = dg1File.mrzInfo
-                person = PersonDetails()
-                person.name = (
-                        mrzInfo.secondaryIdentifier.replace("<", " ").trim { it <= ' ' })
-                person.surname = (
-                        mrzInfo.primaryIdentifier.replace("<", " ").trim { it <= ' ' })
-                person.personalNumber = mrzInfo.personalNumber
-                person.gender = mrzInfo.gender.toString()
-                person.serialNumber = mrzInfo.documentNumber
-                person.nationality = mrzInfo.nationality
-                if ("I" == mrzInfo.documentCode) {
-                    docType = DocType.ID_CARD
-                } else if ("P" == mrzInfo.documentCode) {
-                    docType = DocType.PASSPORT
-                }
-                emitter.onNext(0.66f)
-                // -- Face Image -- //
-                val dg2In = service.getInputStream(PassportService.EF_DG2)
-                val dg2File = DG2File(dg2In)
-                val faceInfos = dg2File.faceInfos
-                val allFaceImageInfos: MutableList<FaceImageInfo> = ArrayList()
-                for (faceInfo in faceInfos) {
-                    allFaceImageInfos.addAll(faceInfo.faceImageInfos)
-                }
-                if (allFaceImageInfos.isNotEmpty()) {
-                    val faceImageInfo = allFaceImageInfos.iterator().next()
-                    val image: Image = ImageUtil.getImage(context, faceImageInfo)
-                    person.faceImage = image.bitmapImage
-                    person.faceImageBase64 = image.base64Image
-                }
-                person.docType = docType
-
-                if (!emitter.isDisposed) {
-                    emitter.onNext(1f)
-                }
-                emitter.onComplete()
-
-            } catch (e: Throwable) {
-                emitter.onError(e)
             }
-        }.subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread()).subscribe({
-                if (it == 1f) {
-                    nextProgress.value = it
-                    completeRead.postValue(person)
-                } else {
-                    nextProgress.value = it
-                }
-            }, {
-                it.printStackTrace()
-                errorRead.call()
-            })
+        }
     }
 
 }
