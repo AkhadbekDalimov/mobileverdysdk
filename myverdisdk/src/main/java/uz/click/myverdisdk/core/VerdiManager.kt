@@ -176,10 +176,10 @@ class VerdiManager(private var applicationHandler: Handler) {
             user.dateOfExpiry
         )
         val modelPersonRequest = ModelPersonRequest(passRequest)
-        val answere = Answere(1, "OK")
+        val answere = Answer(1, "OK")
         val base64Pass = user.imageFaceBase?.toBase64()
-        Log.d("Base64ImageTag", "ImageFaceBase: "  + base64Pass.toString())
-        Log.d("Base64ImageTag", "UserBase64: "  + user.base64Image)
+        Log.d("Base64ImageTag", "ImageFaceBase: " + base64Pass.toString())
+        Log.d("Base64ImageTag", "UserBase64: " + user.base64Image)
         val personPhoto = ModelPersonPhotoRequest(answere, user.base64Image, base64Pass)
         val model = Build.MODEL
         val modelMobileData =
@@ -204,7 +204,7 @@ class VerdiManager(private var applicationHandler: Handler) {
             modelServiceInfo = modelServiceInfo
         )
         Log.d(
-            "RequestTag",
+            "RequestTagOkhttp",
             moshi.adapter<PassportInfoRequest>(PassportInfoRequest::class.java)
                 .toJson(passportRequest)
         )
@@ -216,6 +216,7 @@ class VerdiManager(private var applicationHandler: Handler) {
             .addHeader("Content-type", "application/json")
             .post(body)
             .build()
+
 
         okClient.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
@@ -250,7 +251,9 @@ class VerdiManager(private var applicationHandler: Handler) {
                                 0 -> {
                                     Verdi.result = initialResponse.response ?: PersonResult()
                                     VerdiPreferences.clientPublicKey = publicKey
-                                    VerdiPreferences.deviceSerialNumber = initialResponse.response?.clientData?.device?.serialNumber ?: ""
+                                    VerdiPreferences.deviceSerialNumber =
+                                        initialResponse.response?.clientData?.device?.serialNumber
+                                            ?: ""
                                     listener.onSuccess(initialResponse)
                                 }
                                 else -> {
@@ -286,7 +289,7 @@ class VerdiManager(private var applicationHandler: Handler) {
                 }
 
                 override fun onSuccess(response: Any) {
-                    registerPerson(listener)
+                    verifyPerson(listener)
                 }
             })
             return
@@ -327,7 +330,7 @@ class VerdiManager(private var applicationHandler: Handler) {
         )
 
         Log.d(
-            "RequestTag",
+            "RequestTagOkhttp",
             moshi.adapter<PassportInfoRequest>(PassportInfoRequest::class.java)
                 .toJson(passportRequest)
         )
@@ -393,5 +396,11 @@ class VerdiManager(private var applicationHandler: Handler) {
                 }
             }
         })
+    }
+
+    fun cancelAllRunningCalls() {
+        for (call in okClient.dispatcher().runningCalls()) {
+            call.cancel()
+        }
     }
 }

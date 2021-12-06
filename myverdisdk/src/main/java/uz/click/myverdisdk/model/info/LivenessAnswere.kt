@@ -3,14 +3,13 @@ package uz.click.myverdisdk.model.info
 import android.os.Parcel
 import android.os.Parcelable
 import com.squareup.moshi.Json
-import uz.click.myverdisdk.model.info.ValidateResponse
-import uz.click.myverdisdk.model.request.Answere
+import uz.click.myverdisdk.model.request.Answer
 
 
 class LivenessAnswere() : Parcelable {
 
     @field:Json(name = "answere")
-    private val answere: Answere? = null
+    private val answer: Answer? = null
     @field:Json(name  = "validateResponse",
 //        alternate = ["ValidateResponse"]
     )

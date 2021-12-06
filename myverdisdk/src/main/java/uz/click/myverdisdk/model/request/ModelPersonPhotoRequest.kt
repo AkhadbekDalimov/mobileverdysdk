@@ -2,7 +2,7 @@ package uz.click.myverdisdk.model.request
 
 data class ModelPersonPhotoRequest(
 
-    var answere: Answere? = null,
+    var answer: Answer? = null,
 
     var personPhoto: String? = null,
 

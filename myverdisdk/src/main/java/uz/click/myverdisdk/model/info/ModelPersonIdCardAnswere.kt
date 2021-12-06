@@ -3,10 +3,10 @@ package uz.click.myverdisdk.model.info
 import android.os.Parcel
 import android.os.Parcelable
 import com.squareup.moshi.Json
-import uz.click.myverdisdk.model.request.Answere
+import uz.click.myverdisdk.model.request.Answer
 
 class ModelPersonIdCardAnswere() : Parcelable {
-    private var answere: Answere? = null
+    private var answer: Answer? = null
 
     @field:Json(name = "PersonIdCard")
      var personIdCard: ModelPersonIdCard? = null
@@ -17,7 +17,7 @@ class ModelPersonIdCardAnswere() : Parcelable {
 
     override fun toString(): String {
         return "ModelPersonIdCardAnswere{" +
-                "answere=" + answere +
+                "answere=" + answer +
                 ", personIdCard=" + personIdCard +
                 '}'
     }

@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import uz.click.myverdisdk.BuildConfig
 
-object VerdiPreferences {
+internal object VerdiPreferences {
 
     private lateinit var preferences: SharedPreferences
 
@@ -22,5 +22,11 @@ object VerdiPreferences {
         get() = preferences.getString(::deviceSerialNumber.name, "") ?: ""
         set(value) {
             preferences.edit().putString(::deviceSerialNumber.name, value).apply()
+        }
+
+    var isUserRegistered: Boolean
+        get() = preferences.getBoolean(::isUserRegistered.name, false)
+        set(value) {
+            preferences.edit().putBoolean(::isUserRegistered.name, value).apply()
         }
 }

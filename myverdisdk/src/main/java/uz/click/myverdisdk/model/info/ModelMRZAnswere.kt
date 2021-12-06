@@ -3,11 +3,10 @@ package uz.click.myverdisdk.model.info
 import android.os.Parcel
 import android.os.Parcelable
 import com.squareup.moshi.Json
-import uz.click.myverdisdk.model.info.ModelMRZ
-import uz.click.myverdisdk.model.request.Answere
+import uz.click.myverdisdk.model.request.Answer
 
 class ModelMRZAnswere() : Parcelable {
-    private var answere: Answere? = null
+    private var answer: Answer? = null
 
     @field:Json(name = "MRZ")
      var mrz: ModelMRZ? = null
@@ -16,14 +15,14 @@ class ModelMRZAnswere() : Parcelable {
         mrz = parcel.readParcelable(ModelMRZ::class.java.classLoader)
     }
 
-    fun getAnswere(): Answere? {
-        return answere
+    fun getAnswere(): Answer? {
+        return answer
     }
 
 
     override fun toString(): String {
         return "ModelMRZAnswere{" +
-                "answere=" + answere +
+                "answere=" + answer +
                 ", mrz=" + mrz +
                 '}'
     }

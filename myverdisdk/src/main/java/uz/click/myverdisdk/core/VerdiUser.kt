@@ -18,4 +18,6 @@ data class VerdiUser(
     var imageFaceBase: Bitmap? = null,
     var base64Image: String? = "",
     var deviceId : String = "",
-) : Parcelable
+) : Parcelable {
+
+}

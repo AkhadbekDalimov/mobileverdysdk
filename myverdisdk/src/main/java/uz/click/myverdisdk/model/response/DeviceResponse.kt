@@ -1,5 +1,7 @@
-package uz.click.myverdisdk.data.model.response
+package uz.click.myverdisdk.model.response
 
-class DeviceResponse {
-    val serialNumber: String? =null
-}
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
+class DeviceResponse(val serialNumber: String? = null) : Parcelable

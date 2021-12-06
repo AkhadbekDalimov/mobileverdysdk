@@ -22,10 +22,7 @@ import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import uz.click.myverdisdk.R
 import uz.click.myverdisdk.core.Verdi
-import uz.click.myverdisdk.core.callbacks.ResponseListener
 import uz.click.myverdisdk.impl.RegisterRequestActivity
-import uz.click.myverdisdk.model.info.PersonResult
-import uz.click.myverdisdk.model.request.RegistrationResponse
 import uz.click.myverdisdk.util.rotateImage
 import uz.click.myverdisdk.util.toBitmap
 import java.util.concurrent.ExecutorService

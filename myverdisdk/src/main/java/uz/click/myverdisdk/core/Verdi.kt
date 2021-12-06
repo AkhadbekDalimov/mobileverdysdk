@@ -35,6 +35,8 @@ object Verdi {
 
     var registerListener: VerdiRegisterListener? = null
 
+    var verifyListener: VerdiListener? = null
+
     var user: VerdiUser = VerdiUser()
 
     var result = PersonResult()
@@ -46,6 +48,9 @@ object Verdi {
 
     val isNfcEnabled: Boolean
         get() = nfcAdapter?.isEnabled == true
+
+    val isUserRegistered: Boolean
+        get() = VerdiPreferences.isUserRegistered
 
     @[JvmStatic Keep]
     fun init(
@@ -74,7 +79,8 @@ object Verdi {
     }
 
     @[JvmStatic Keep]
-    fun openSelfieActivity(activity: Activity) {
+    fun openSelfieActivity(activity: Activity, verifyListener: VerdiListener? = null) {
+        this.verifyListener = verifyListener
         activity.startActivity(SelfieActivity.getInstance(activity))
     }
 
@@ -136,6 +142,14 @@ object Verdi {
         } else {
             listener.onFailure(VerdiNotInitializedException())
         }
+    }
+
+    fun logout() {
+        VerdiPreferences.isUserRegistered = false
+    }
+
+    internal fun cancelAllRequests() {
+        verdiManager.cancelAllRunningCalls()
     }
 
 }
