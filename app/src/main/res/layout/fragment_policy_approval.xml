@@ -19,6 +19,7 @@
         app:layout_constraintWidth_percent="0.9" />
 
     <LinearLayout
+        android:id="@+id/llActions"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -30,8 +31,8 @@
             android:id="@+id/btnDisagree"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:paddingBottom="8dp"
             android:layout_weight="1"
+            android:paddingBottom="8dp"
             android:text="Disagree"
             android:textColor="@color/black"
             app:backgroundTint="@color/white" />
@@ -43,8 +44,8 @@
         <FrameLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:paddingBottom="8dp"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:paddingBottom="8dp">
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnAgree"
@@ -61,10 +62,24 @@
                 android:layout_gravity="end|center_vertical"
                 android:layout_margin="6dp"
                 android:elevation="6dp"
-                android:visibility="gone"
                 android:indeterminate="true"
-                android:indeterminateTint="@color/white" />
+                android:indeterminateTint="@color/white"
+                android:visibility="gone" />
         </FrameLayout>
+
     </LinearLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btnLogout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="12dp"
+        android:rotation="180"
+        android:src="@drawable/ic_logout"
+        app:backgroundTint="@color/white"
+        app:layout_constraintBottom_toTopOf="@id/llActions"
+        app:layout_constraintRight_toRightOf="parent"
+        app:tint="@color/colorPrimary"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

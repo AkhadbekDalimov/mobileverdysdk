@@ -34,10 +34,6 @@ class PersonFragment : Fragment() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-    }
-
     companion object {
         @JvmStatic
         fun newInstance() = PersonFragment()
