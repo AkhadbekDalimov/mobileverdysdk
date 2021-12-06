@@ -21,10 +21,10 @@
         app:lottie_rawRes="@raw/face_recognition" />
 
     <Button
-        android:id="@+id/btnAction"
+        android:id="@+id/btnCancel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Next"
+        android:text="Cancel"
         android:layout_margin="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

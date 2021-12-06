@@ -75,7 +75,7 @@ class RegisterRequestActivity : AppCompatActivity() {
             })
         }
 
-        findViewById<Button>(R.id.btnAction).setOnClickListener {
+        findViewById<Button>(R.id.btnCancel).setOnClickListener {
             Verdi.cancelAllRequests()
             finish()
         }

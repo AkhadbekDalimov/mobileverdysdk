@@ -30,16 +30,16 @@ class VerdiManager(private var applicationHandler: Handler) {
         private const val READ_TIME_OUT: Long = 10 * 1000 // 10 second
         private const val WRITE_TIME_OUT: Long = 10 * 1000 // 10 second
         private val JSON = MediaType.parse("application/json; charset=utf-8")
-        const val LANGUAGE = "ru"
+        var LANGUAGE = Verdi.config.locale
         const val VERDI_BASE_URL = "https://api.digid.uz:8080/"
         const val VERDI_BASE_URL_TEST = "https://testapi.digid.uz:8082/"
         const val APP_ID_VERDI = "3f4b68e09a319cf4"
         const val APP_ID_CLICK = "P8g13lFKmXo8TlFO"
-        const val REQUEST_CHECK_APP_ID = "mobile/data/${LANGUAGE}/checkAppId"
-        const val REQUEST_SEND_PHONE = "digid-service/phone/${LANGUAGE}/send"
-        const val REQUEST_CHECK_PHONE = "digid-service/phone/${LANGUAGE}/check"
-        const val REQUEST_REGISTRATION = "pinpp/${LANGUAGE}/registration"
-        const val REQUEST_VERIFICATION = "pinpp/${LANGUAGE}/verification"
+        var REQUEST_CHECK_APP_ID = "mobile/data/${LANGUAGE}/checkAppId"
+        var REQUEST_SEND_PHONE = "digid-service/phone/${LANGUAGE}/send"
+        var  REQUEST_CHECK_PHONE = "digid-service/phone/${LANGUAGE}/check"
+        var  REQUEST_REGISTRATION = "pinpp/${LANGUAGE}/registration"
+        var  REQUEST_VERIFICATION = "pinpp/${LANGUAGE}/verification"
 
         const val AUTH_CHECK_APP_ID = "Basic dGVzdHJlYWQ6dGVzdHBhc3M="
         const val AUTH_PHONE = "Basic ZGlnaWQ6ZGlnaWQyMDE5"

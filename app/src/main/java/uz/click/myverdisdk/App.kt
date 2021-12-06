@@ -13,6 +13,7 @@ class App : Application() {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
         val config = VerdiUserConfig
             .Builder()
+            .locale("uz")
             .appId("P8g13lFKmXo8TlFO")
             .build()
         Verdi.init(this, config)
