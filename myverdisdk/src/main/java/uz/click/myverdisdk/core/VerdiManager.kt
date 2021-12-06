@@ -178,8 +178,6 @@ class VerdiManager(private var applicationHandler: Handler) {
         val modelPersonRequest = ModelPersonRequest(passRequest)
         val answere = Answer(1, "OK")
         val base64Pass = user.imageFaceBase?.toBase64()
-        Log.d("Base64ImageTag", "ImageFaceBase: " + base64Pass.toString())
-        Log.d("Base64ImageTag", "UserBase64: " + user.base64Image)
         val personPhoto = ModelPersonPhotoRequest(answere, user.base64Image, base64Pass)
         val model = Build.MODEL
         val modelMobileData =
@@ -202,11 +200,6 @@ class VerdiManager(private var applicationHandler: Handler) {
             modelPersonPassport = modelPersonRequest,
             modelPersonPhoto = personPhoto,
             modelServiceInfo = modelServiceInfo
-        )
-        Log.d(
-            "RequestTagOkhttp",
-            moshi.adapter<PassportInfoRequest>(PassportInfoRequest::class.java)
-                .toJson(passportRequest)
         )
         val adapter = moshi.adapter<PassportInfoRequest>(PassportInfoRequest::class.java)
         val body = RequestBody.create(JSON, adapter.toJson(passportRequest))
@@ -241,12 +234,6 @@ class VerdiManager(private var applicationHandler: Handler) {
                             val initialResponse =
                                 moshi.adapter<RegistrationResponse>(RegistrationResponse::class.java)
                                     .fromJson(it.string())
-                            Log.d(
-                                "TagCheck",
-                                moshi.adapter<RegistrationResponse>(RegistrationResponse::class.java)
-                                    .toJson(initialResponse)
-                            )
-
                             when (initialResponse?.code) {
                                 0 -> {
                                     Verdi.result = initialResponse.response ?: PersonResult()
@@ -328,12 +315,6 @@ class VerdiManager(private var applicationHandler: Handler) {
             modelServiceInfo = modelServiceInfo,
             modelMobileData = modelMobileData
         )
-
-        Log.d(
-            "RequestTagOkhttp",
-            moshi.adapter<PassportInfoRequest>(PassportInfoRequest::class.java)
-                .toJson(passportRequest)
-        )
         val adapter = moshi.adapter<PassportInfoRequest>(PassportInfoRequest::class.java)
         val body = RequestBody.create(JSON, adapter.toJson(passportRequest))
         val request = Request.Builder()
@@ -366,11 +347,6 @@ class VerdiManager(private var applicationHandler: Handler) {
                             val initialResponse =
                                 moshi.adapter<RegistrationResponse>(RegistrationResponse::class.java)
                                     .fromJson(it.string())
-                            Log.d(
-                                "TagCheck",
-                                moshi.adapter<RegistrationResponse>(RegistrationResponse::class.java)
-                                    .toJson(initialResponse)
-                            )
                             applicationHandler.post {
                                 when (initialResponse?.code) {
                                     0 -> {

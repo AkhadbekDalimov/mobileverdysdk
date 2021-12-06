@@ -33,7 +33,6 @@ class RegisterRequestActivity : AppCompatActivity() {
 
             Verdi.verifyPerson(object : ResponseListener<RegistrationResponse> {
                 override fun onFailure(e: Exception) {
-                    Log.d("CheckTag","Error: " + e.message)
                     Verdi.registerListener?.onRegisterError(e)
                     lifecycleScope.launch {
                         withContext(Dispatchers.Main) {
@@ -53,7 +52,6 @@ class RegisterRequestActivity : AppCompatActivity() {
                 }
             })
         } else {
-            Log.d("CheckTag","Else: " + VerdiPreferences.isUserRegistered.toString() )
             Verdi.registerPerson(object : ResponseListener<RegistrationResponse> {
                 override fun onFailure(e: Exception) {
                     Verdi.registerListener?.onRegisterError(e)
