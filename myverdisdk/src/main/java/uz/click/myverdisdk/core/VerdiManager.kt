@@ -292,7 +292,7 @@ class VerdiManager(private var applicationHandler: Handler) {
         val signString = md5(buildString {
             guid + deviceSerialNumber + deviceID + VerdiPreferences.clientPublicKey
         })
-        val personPhoto = ModelPersonPhotoRequest(null, null, "")
+        val personPhoto = ModelPersonPhotoRequest(null, null, Verdi.user.imageFaceBase?.toBase64())
 
         val model = Build.MODEL
 
