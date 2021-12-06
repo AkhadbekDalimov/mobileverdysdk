@@ -49,8 +49,8 @@ object Verdi {
     val isNfcEnabled: Boolean
         get() = nfcAdapter?.isEnabled == true
 
-    val isUserRegistered: Boolean
-        get() = VerdiPreferences.isUserRegistered
+    var isUserRegistered: Boolean = false
+        get() = user.scannerSerial.isNotEmpty()
 
     @[JvmStatic Keep]
     fun init(
@@ -79,7 +79,12 @@ object Verdi {
     }
 
     @[JvmStatic Keep]
-    fun openSelfieActivity(activity: Activity, verifyListener: VerdiListener? = null) {
+    fun openSelfieActivity(
+        activity: Activity,
+        verifyListener: VerdiListener? = null,
+        scannerSerialNumber: String = ""
+    ) {
+        user.scannerSerial = scannerSerialNumber
         this.verifyListener = verifyListener
         activity.startActivity(SelfieActivity.getInstance(activity))
     }
@@ -113,6 +118,7 @@ object Verdi {
             listener.onRegisterError(PassportInfoInvalidException())
             return
         }
+
         if (!isNfcAvailable) {
             openSelfieActivity(activity)
         } else {
@@ -142,10 +148,6 @@ object Verdi {
         } else {
             listener.onFailure(VerdiNotInitializedException())
         }
-    }
-
-    fun logout() {
-        VerdiPreferences.isUserRegistered = false
     }
 
     internal fun cancelAllRequests() {

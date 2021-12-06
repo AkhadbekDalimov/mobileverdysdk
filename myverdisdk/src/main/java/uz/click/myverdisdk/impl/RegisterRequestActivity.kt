@@ -29,8 +29,7 @@ class RegisterRequestActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register_request)
-        if (VerdiPreferences.isUserRegistered) {
-
+        if (Verdi.isUserRegistered) {
             Verdi.verifyPerson(object : ResponseListener<RegistrationResponse> {
                 override fun onFailure(e: Exception) {
                     Verdi.registerListener?.onRegisterError(e)
@@ -64,7 +63,7 @@ class RegisterRequestActivity : AppCompatActivity() {
 
                 override fun onSuccess(response: RegistrationResponse) {
                     Verdi.result = response.response ?: PersonResult()
-                    VerdiPreferences.isUserRegistered = true
+                    Verdi.user.scannerSerial = response.response?.clientData?.device?.serialNumber ?: ""
                     Verdi.registerListener?.onRegisterSuccess()
                     lifecycleScope.launch {
                         withContext(Dispatchers.Main) {

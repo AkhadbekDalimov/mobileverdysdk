@@ -13,6 +13,7 @@ import uz.click.myverdisdk.core.Verdi
 import uz.click.myverdisdk.databinding.FragmentIdentificationBinding
 import uz.click.myverdisdk.ui.adapter.ResultsViewPagerAdapter
 import uz.click.myverdisdk.ui.adapter.StepsViewPagerAdapter
+import uz.click.myverdisdk.utils.AppPreferences
 
 class IdentificationFragment : Fragment() {
 
@@ -31,7 +32,7 @@ class IdentificationFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.btnLogout.setOnClickListener {
-            Verdi.logout()
+            AppPreferences.scannerSerialNumber = ""
             startActivity(
                 Intent.makeRestartActivityTask(
                     requireActivity().intent.component

@@ -15,6 +15,7 @@ import uz.click.myverdisdk.core.callbacks.VerdiRegisterListener
 import uz.click.myverdisdk.databinding.FragmentDocumentInputBinding
 import uz.click.myverdisdk.util.DocumentInputType
 import uz.click.myverdisdk.util.DocumentInputValidation
+import uz.click.myverdisdk.utils.AppPreferences
 import uz.click.myverdisdk.utils.toast
 import java.lang.Exception
 
@@ -107,6 +108,7 @@ class DocumentInputFragment : Fragment(), VerdiListener, VerdiRegisterListener {
     }
 
     override fun onRegisterSuccess() {
+        AppPreferences.scannerSerialNumber = Verdi.user.scannerSerial
         viewModel.changeStep(2)
     }
 

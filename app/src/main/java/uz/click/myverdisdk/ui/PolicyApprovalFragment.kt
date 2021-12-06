@@ -15,6 +15,7 @@ import uz.click.myverdisdk.core.callbacks.VerdiListener
 import uz.click.myverdisdk.databinding.FragmentPolicyApprovalBinding
 import uz.click.myverdisdk.model.request.RegistrationResponse
 import uz.click.myverdisdk.model.response.AppIdResponse
+import uz.click.myverdisdk.utils.AppPreferences
 import uz.click.myverdisdk.utils.hide
 import uz.click.myverdisdk.utils.show
 import uz.click.myverdisdk.utils.toast
@@ -31,20 +32,25 @@ class PolicyApprovalFragment : Fragment(), VerdiListener {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentPolicyApprovalBinding.inflate(inflater, container, false)
-        binding.btnAgree.setOnClickListener {
-            if (Verdi.isUserRegistered)
-                Verdi.openSelfieActivity(requireActivity(), this)
-            else
-                viewModel.changeStep(1)
-        }
-        binding.btnLogout.isVisible = Verdi.isUserRegistered
+
+        binding.btnLogout.isVisible = AppPreferences.scannerSerialNumber.isNotEmpty()
         binding.btnLogout.setOnClickListener {
-            Verdi.logout()
+            AppPreferences.scannerSerialNumber = ""
             startActivity(
                 Intent.makeRestartActivityTask(
                     requireActivity().intent.component
                 )
             )
+        }
+
+        binding.btnAgree.setOnClickListener {
+            if (AppPreferences.scannerSerialNumber.isNotEmpty())
+                Verdi.openSelfieActivity(
+                    requireActivity(), this@PolicyApprovalFragment,
+                    AppPreferences.scannerSerialNumber
+                )
+            else
+                viewModel.changeStep(1)
         }
         return binding.root
     }

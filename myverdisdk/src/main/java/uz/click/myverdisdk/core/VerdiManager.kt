@@ -300,7 +300,7 @@ class VerdiManager(private var applicationHandler: Handler) {
             ModelMobileData(model, null, deviceID, null)
 
         val serviceInfo = ServiceInfo()
-        serviceInfo.scannerSerial = deviceSerialNumber
+        serviceInfo.scannerSerial = Verdi.user.scannerSerial
 
         val modelServiceInfo = ModelServiceInfo()
         modelServiceInfo.serviceInfo = serviceInfo

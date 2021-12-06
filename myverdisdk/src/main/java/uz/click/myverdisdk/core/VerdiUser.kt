@@ -17,7 +17,8 @@ data class VerdiUser(
     var docType: String = "",
     var imageFaceBase: Bitmap? = null,
     var base64Image: String? = "",
-    var deviceId : String = "",
+    var deviceId: String = "",
+    var scannerSerial: String = ""
 ) : Parcelable {
 
 }
