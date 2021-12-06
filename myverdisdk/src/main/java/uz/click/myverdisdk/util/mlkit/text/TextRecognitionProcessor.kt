@@ -58,15 +58,13 @@ open class TextRecognitionProcessor(
                 isDetectPassport = true
                 isDetectIDCard = false
             }
-            val mrz = fullRead.substringAfter("P<UZB", "<<").substringBeforeLast("<<<")
-            val lastName = mrz.substringBefore("<<").replace("<", "")
-            val firstName = mrz.substringAfter("<<").replace("<", "")
-
-            val serial = matcherLineOldPassportType.group(1) as String
-            val documentNumber = cleanDate(matcherLineOldPassportType.group(2))
-            val dateOfBirthDay = cleanDate(matcherLineOldPassportType.group(5))
-            val expirationDate = cleanDate(matcherLineOldPassportType.group(8))
-            val personalNumber = cleanDate(matcherLineOldPassportType.group(10))
+            val lastName = matcherLineOldPassportType.group(2)
+            val firstName = matcherLineOldPassportType.group(4)
+            val serial = matcherLineOldPassportType.group(10) as String
+            val documentNumber = cleanDate(matcherLineOldPassportType.group(11))
+            val dateOfBirthDay = cleanDate(matcherLineOldPassportType.group(14))
+            val expirationDate = cleanDate(matcherLineOldPassportType.group(17))
+            val personalNumber = cleanDate(matcherLineOldPassportType.group(19))
             val mrzInfo = createDummyMrz(
                 serial + documentNumber,
                 dateOfBirthDay,
@@ -171,7 +169,7 @@ open class TextRecognitionProcessor(
         private const val REGEX_OLD_ID_CARD_UZB: String =
             "(?<documentType>[A-Z<]{2})(?<nationality>[A-Z<]{3})(?<documentNumber>[A-Z0-9<]{9})(?<number>[A-Z0-9<])(?<identificationNumber>[0-9ILDSOG]{14})(?<nn>[-<]{2})(?<dateOfBirth>[0-9ILDSOG]{6})(?<checkDigitDateOfBirth>[0-9ILDSOG]{1})(?<sex>[FM<]){1}(?<expirationDate>[0-9ILDSOG]{6})(?<checkDigitExpiration>[0-9ILDSOG]{1})"
         private const val REGEX_OLD_PASSPORT_UZB =
-            "(?<serial>[A-Z<]{2})(?<documentNumber>[0-9<]{7})(?<checkDigitDocumentNumber>[0-9ILDSOG])(?<nationality>[A-Z<]{3})(?<dateOfBirth>[0-9ILDSOG]{6})(?<checkDigitDateOfBirth>[0-9ILDSOG])(?<sex>[FM<])(?<expirationDate>[0-9ILDSOG]{6})(?<checkDigitExpiration>[0-9ILDSOG](?<identificationNumber>[0-9ILDSOG]{14})(?<checkIdentificationNumber>[0-9ILDSOG]{2}))"
+            "(P<UZB)(?<firstName>[A-Z0-9]{2,20})(<<)(?<lastName>[A-Z0-9]{3,20})(<?)(?<lasName>[A-Z0-9]{3,20})(<*)(«*)(-*)(?<serial>[A-Z<]{2})(?<documentNumber>[0-9<]{7})(?<checkDigitDocumentNumber>[0-9ILDSOG])(?<nationality>[A-Z<]{3})(?<dateOfBirth>[0-9ILDSOG]{6})(?<checkDigitDateOfBirth>[0-9ILDSOG])(?<sex>[FM<])(?<expirationDate>[0-9ILDSOG]{6})(?<checkDigitExpiration>[0-9ILDSOG](?<identificationNumber>[0-9ILDSOG]{14})(?<checkIdentificationNumber>[0-9ILDSOG]{2}))"
     }
 
     override fun onFailure(e: Exception) {
