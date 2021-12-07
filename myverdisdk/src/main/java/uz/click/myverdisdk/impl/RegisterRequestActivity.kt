@@ -32,7 +32,7 @@ class RegisterRequestActivity : AppCompatActivity() {
         if (Verdi.isUserRegistered) {
             Verdi.verifyPerson(object : ResponseListener<RegistrationResponse> {
                 override fun onFailure(e: Exception) {
-                    Verdi.registerListener?.onRegisterError(e)
+                    Verdi.verifyListener?.onError(e)
                     lifecycleScope.launch {
                         withContext(Dispatchers.Main) {
                             finish()
@@ -42,7 +42,7 @@ class RegisterRequestActivity : AppCompatActivity() {
 
                 override fun onSuccess(response: RegistrationResponse) {
                     Verdi.result = response.response ?: PersonResult()
-                    Verdi.registerListener?.onRegisterSuccess()
+                    Verdi.verifyListener?.onSuccess()
                     lifecycleScope.launch {
                         withContext(Dispatchers.Main) {
                             finish()

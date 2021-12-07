@@ -1,9 +1,13 @@
 package uz.click.myverdisdk.util
 
+import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
+import android.net.Uri
 import android.os.Build
+import android.provider.Settings
 import android.util.Base64
 import android.view.DisplayCutout
 import android.view.View
@@ -74,4 +78,11 @@ fun Bitmap.rotateImage(angle: Float): Bitmap? {
         this, 0, 0, this.width, this.height,
         matrix, true
     )
+}
+
+fun Context.openAppSystemSettings() {
+    startActivity(Intent().apply {
+        action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+        data = Uri.fromParts("package", packageName, null)
+    })
 }

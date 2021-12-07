@@ -1,6 +1,9 @@
 package uz.click.myverdisdk.impl.scan
 
+import android.Manifest.permission.CAMERA
 import android.app.Activity
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -25,6 +28,7 @@ import uz.click.myverdisdk.util.PublicMethods
 import uz.click.myverdisdk.util.mlkit.VisionImageProcessor
 import uz.click.myverdisdk.util.mlkit.barcodescanner.BarcodeScannerProcessor
 import uz.click.myverdisdk.util.mlkit.text.TextRecognitionProcessor
+import uz.click.myverdisdk.util.openAppSystemSettings
 import uz.click.myverdisdk.util.views.OverlayViewQrCode
 import java.util.concurrent.ExecutionException
 
@@ -226,7 +230,19 @@ class ScanActivity : AppCompatActivity(),
         if (PublicMethods.allPermissionsGranted(this)) {
             bindAllCameraUseCases()
         } else {
-            finish()
+            //Now further we check if used denied permanently or not
+            if (ActivityCompat.shouldShowRequestPermissionRationale(
+                    this,
+                    CAMERA
+                )
+            ) {
+                // case 4 User has denied permission but not permanently
+                openAlertDialog()
+            } else {
+                // case 5. Permission denied permanently.
+                // You can open Permission setting's page from here now.
+                openAlertDialog(true)
+            }
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
@@ -256,6 +272,28 @@ class ScanActivity : AppCompatActivity(),
     override fun onDetectPassport(results: Boolean) {
         isQrCode = false
         changeScanTypeUi()
+    }
+
+    private fun openAlertDialog(isDeniedPermanently: Boolean = false) {
+        val dialog = AlertDialog.Builder(this)
+        dialog.setTitle("Permission Required")
+        dialog.setMessage("Please enable Camera permission")
+        dialog.setNegativeButton(
+            "Cancel"
+        ) { dialog, which ->
+            finish()
+        }
+        dialog.setPositiveButton(
+            R.string.Enable
+        ) { dialog, which ->
+            if (isDeniedPermanently) {
+                finish()
+                openAppSystemSettings()
+            } else
+                PublicMethods.runtimePermissions(this)
+
+        }
+        dialog.show()
     }
 
     override fun onDetectIdCard(results: Boolean) {

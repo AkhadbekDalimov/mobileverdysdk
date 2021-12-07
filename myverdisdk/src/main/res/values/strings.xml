@@ -22,4 +22,5 @@
     <string name="next">Next</string>
     <string name="nfc_is_not_enabled">"NFC is available, but not enabled"</string>
     <string name="nfc_is_not_available">NFC is not available on device</string>
+    <string name="Enable">Enable</string>
 </resources>
