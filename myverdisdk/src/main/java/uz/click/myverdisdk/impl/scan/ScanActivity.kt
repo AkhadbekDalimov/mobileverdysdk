@@ -49,10 +49,10 @@ class ScanActivity : AppCompatActivity(),
         const val VERDI_LISTENER = "verdiListener"
         fun getInstance(
             activity: Activity,
-            isQrCode : Boolean
+            isQrCode: Boolean
         ): Intent {
             return Intent(activity, ScanActivity::class.java).apply {
-                putExtra(IS_QR_CODE,  isQrCode)
+                putExtra(IS_QR_CODE, isQrCode)
             }
         }
     }
@@ -225,6 +225,8 @@ class ScanActivity : AppCompatActivity(),
         Log.i(TAG, "Permission granted!")
         if (PublicMethods.allPermissionsGranted(this)) {
             bindAllCameraUseCases()
+        } else {
+            finish()
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
