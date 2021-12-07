@@ -289,9 +289,9 @@ class VerdiManager(private var applicationHandler: Handler) {
             listener.onFailure(VerdiNotInitializedException())
             return
         }
-        val signString = md5(buildString {
-            guid + deviceSerialNumber + deviceID + VerdiPreferences.clientPublicKey
-        })
+
+        val signString = md5(guid + deviceSerialNumber + deviceID + VerdiPreferences.clientPublicKey)
+
         val personPhoto = ModelPersonPhotoRequest(null, null, Verdi.user.imageFaceBase?.toBase64())
 
         val model = Build.MODEL

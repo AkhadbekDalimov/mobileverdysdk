@@ -38,13 +38,10 @@ class SelfieActivity : AppCompatActivity() {
     lateinit var previewView: PreviewView
     lateinit var ivCameraSwitch: ImageView
     lateinit var ibCameraCapture: ImageButton
-    lateinit var llGifView: LinearLayout
 
-    lateinit var btnOk: AppCompatButton
     lateinit var cameraContainer: ConstraintLayout
 
     private lateinit var viewFinder: PreviewView
-    private lateinit var broadcastManager: LocalBroadcastManager
     private var displayId: Int = -1
     private var lensFacing: Int = CameraSelector.LENS_FACING_FRONT
     private var preview: Preview? = null
@@ -52,7 +49,6 @@ class SelfieActivity : AppCompatActivity() {
     private var camera: Camera? = null
     private var cameraProvider: ProcessCameraProvider? = null
     private lateinit var cameraExecutor: ExecutorService
-    private lateinit var cameraShutterButton: ImageButton
 
     companion object {
         const val VERDI_LISTENER = "verdiListener"
@@ -200,9 +196,8 @@ class SelfieActivity : AppCompatActivity() {
                 override fun onCaptureSuccess(image: ImageProxy) {
                     val bitmap = image.toBitmap()
                     if (bitmap != null) {
-                        Verdi.user.imageFaceBase =
-                            bitmap.rotateImage(image.imageInfo.rotationDegrees.toFloat())
-                        bitmap.rotateImage(image.imageInfo.rotationDegrees.toFloat())?.let {
+                        bitmap.rotateImage(image.imageInfo.rotationDegrees.toFloat())?.let { imageFace ->
+                            Verdi.user.imageFaceBase = imageFace
                             Verdi.stateListener?.onSuccess()
                         }
                         startActivity(RegisterRequestActivity.getInstance(this@SelfieActivity))
@@ -212,7 +207,6 @@ class SelfieActivity : AppCompatActivity() {
                 }
             })
     }
-
 
     private fun updateCameraSwitchButton() {
         try {
