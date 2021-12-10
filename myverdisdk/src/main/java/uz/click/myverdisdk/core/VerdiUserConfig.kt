@@ -6,7 +6,11 @@ import uz.click.myverdisdk.core.errors.AppIdEmptyException
 import uz.click.myverdisdk.impl.ThemeOptions
 
 /**
- * @author Azamat on 27/09/21
+ * Verdi Configuration
+ * App Id initialization is the starting point of the SDK.
+ * Thus, Here AppId must be passed in order to proceed to the next actions
+ * AppId can be given by the DIGID company
+ * @author Azamat
  **/
 @Parcelize
 data class VerdiUserConfig(

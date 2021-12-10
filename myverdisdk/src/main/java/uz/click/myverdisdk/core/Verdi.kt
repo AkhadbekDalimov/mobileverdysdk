@@ -20,7 +20,8 @@ import uz.click.myverdisdk.util.DateUtil
 import uz.click.myverdisdk.util.DocumentInputValidation
 
 /**
- * @author Azamat on 27/09/21
+ * The central Verdi class, where all the important configurations and actions happen
+ * @author Azamat
  * */
 @SuppressLint("HardwareIds")
 object Verdi {
@@ -49,9 +50,16 @@ object Verdi {
     val isNfcEnabled: Boolean
         get() = nfcAdapter?.isEnabled == true
 
-    var isUserRegistered: Boolean = false
+    val isUserRegistered: Boolean
         get() = user.scannerSerial.isNotEmpty()
 
+    /**
+     * This method is a starter method. It should be called preferably in the Application class,
+     * or before using any other methods. VerdiUserConfig should be built and passed, so that other
+     * methods of the SDK work expectedly
+     * @param applicationContext
+     * @param config VerdiUserConfig to initialize basic requirements like AppId
+     */
     @[JvmStatic Keep]
     fun init(
         applicationContext: Context,
@@ -68,6 +76,13 @@ object Verdi {
         nfcAdapter = NfcAdapter.getDefaultAdapter(applicationContext)
     }
 
+    /**
+     * This method will scan Passport or Id Card
+     * Inside the activity Camera permission is required
+     * @param activity It will start ScanActivity
+     * @param verdiListener It will be callback of the results
+     * @param isQrCodeScan by default It will scan Passport. To change it to scan ID Card Pass true
+     */
     @[JvmStatic Keep]
     fun openDocumentScanActivity(
         activity: Activity,
@@ -78,6 +93,12 @@ object Verdi {
         activity.startActivity(ScanActivity.getInstance(activity, isQrCodeScan))
     }
 
+    /**
+     * This method will take a selfie and send the corresponding request
+     * @param activity It will start ScanActivity
+     * @param verdiListener It will be callback of the results
+     * @param isQrCodeScan by default It will scan Passport. To change it to scan ID Card Pass true
+     */
     @[JvmStatic Keep]
     fun openSelfieActivity(
         activity: Activity,
