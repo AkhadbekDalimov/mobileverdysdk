@@ -4,10 +4,10 @@
 
 This SDK can be used to identify a user via passport or Id Card. 
 
-In this repository, you can find the library itself and Sample app which implements it
+In this repository, you can find the library itself and the Sample app which implements it.
 
-* [Library](https://github.com/click-llc/android-msdk/tree/master/mobilesdk)
-* [Sample app, which integrates Digid Mobile SDK](https://github.com/click-llc/android-msdk/tree/master/app)
+* [Library](https://gitlab.com/islomov49/verdimsdk/-/tree/master/myverdisdk)
+* [Sample app, which integrates Digid Mobile SDK](https://gitlab.com/islomov49/verdimsdk/-/tree/master/app)
 
 
 ### Implementation
@@ -30,7 +30,7 @@ Internet permission should be provided in the `AndroidManifest`
 
 ### Usage
 
-In order to start using the sdk, `Verdi` class should be initialized with `VerdiUserConfig` and `Context`, this action preferably should be done in the Application class.
+In order to start using the SDK, `Verdi` class should be initialized with `Context` and `VerdiUserConfig` , this action preferably should be done in the Application class.
 
 Required fields in the `VerdiUserConfig`
 
@@ -48,7 +48,7 @@ Example :
             .locale("uz") // uz, ru, en
             .appId("Your App Id")
             .build()
-        Verdi.init(this, config)
+        Verdi.init(applicationContext, config)
 ```
 
 `HttpLoggingInterceptor` can be enabled 
@@ -57,7 +57,7 @@ Example :
 
 ```
 
-Basically the SDK has 2 main features. Identification and Authorization. 
+Basically the SDK has 2 main features. **Identification** and **Authorization**. 
 
 ### Identification
 
@@ -79,7 +79,7 @@ Basically the SDK has 2 main features. Identification and Authorization.
                     DocumentInputValidation.isInputValid(DocumentInputType.EXPIRATION(dateOfExpiry))
     ```
 
-    - SDK Provides Passport and ID card scan tool, which will read the required info in valid format. If the scan reads the document successfully, `Verdi.user` object holds the scanned info. `Verdi.openDocumentScanActivity` is used to scan document.     
+    - SDK Provides Passport and ID card scan tool, which will read the required info in the valid format. If the scan reads the document successfully, `Verdi.user` object holds the required scanned info. `Verdi.openDocumentScanActivity` is used to scan the document.     
     **Example** Document Scan
       ```kotlin
             /**
@@ -105,17 +105,20 @@ Basically the SDK has 2 main features. Identification and Authorization.
 2. Scan Document with NFC (if NFC is not supported, then SDK skips this step)
 3. Take a selfie: 
 
-Above 2 steps taken sequentially by calling  `Verdi.proceedNfcAndSelfie`. The document info from the step 1 should be passed as paramaters. `VerdiRegisterListener.onRegisterSuccess` method is called, if successfully passed all the steps.
+Above 2 steps taken sequentially by calling  `Verdi.proceedNfcAndSelfie`. The document info from the step 1 should be passed as paramaters for this method. 
 
-  ```
+`VerdiRegisterListener.onRegisterSuccess` method is called, if successfully passed all the steps. This method has `serialNumber` parameter passed, so it should be stored locally. When doing the Authorization part, it can be sent together.
+
+**Example**
+  ```kotlin
   Verdi.proceedNfcAndSelfie(
                     requireActivity(),
                     viewModel.passportSeries,
                     viewModel.dateOfBirth,
                     viewModel.dateOfExpiry,
                     object : VerdiRegisterListener{
-                        override fun onRegisterSuccess() {
-
+                        override fun onRegisterSuccess(serialNumber: String) {
+                            AppPreferences.scannerSerialNumber = serialNumber
                         }
 
                         override fun onRegisterError(exception: Exception) {
@@ -123,6 +126,28 @@ Above 2 steps taken sequentially by calling  `Verdi.proceedNfcAndSelfie`. The do
                     }
                 )
 ```
+
+###2.Authorization
+Authorization happens only after Identification process. The User should only take a selfie, and sent `serialNumber` from the **Identification** process. 
+
+**Example**
+
+```kotlin
+    Verdi.openSelfieActivity(
+        requireActivity(), 
+        object : VerdiListener {
+            override fun onSuccess() {
+
+            }
+
+            override fun onError(exception: Exception) {
+            
+            }
+        },
+        AppPreferences.scannerSerialNumber
+    )
+```
+
 
 
 
