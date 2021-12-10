@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
-    <uz.click.myverdisdk.util.views.OverlayView
+    <uz.digid.myverdisdk.util.views.OverlayView
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

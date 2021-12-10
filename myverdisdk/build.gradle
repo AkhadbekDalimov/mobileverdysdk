@@ -93,8 +93,7 @@ afterEvaluate {
         publications {
             release(MavenPublication) {
                 from components.release
-
-                groupId = 'uz.click.myverdisdk'
+                groupId = 'uz.digid.myverdisdk'
                 artifactId = 'myverdisdk'
                 version = '0.0.1'
             }

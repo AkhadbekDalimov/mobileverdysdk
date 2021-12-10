@@ -60,7 +60,7 @@
             app:layout_constraintStart_toEndOf="@id/vBackgroundCorner"
             app:layout_constraintTop_toTopOf="@+id/vBackgroundCorner" />
 
-        <uz.click.myverdisdk.util.VerticalTextView
+        <uz.digid.myverdisdk.util.VerticalTextView
             android:id="@+id/tvVerticalMrz"
             android:layout_width="32dp"
             android:layout_height="480dp"
@@ -73,7 +73,7 @@
             app:layout_constraintStart_toEndOf="@+id/tvVerticalMrzSecond"
             app:layout_constraintTop_toTopOf="@+id/vRoundedRectangle" />
 
-        <uz.click.myverdisdk.util.VerticalTextView
+        <uz.digid.myverdisdk.util.VerticalTextView
             android:id="@+id/tvVerticalMrzSecond"
             android:layout_width="32dp"
             android:layout_height="480dp"
@@ -163,7 +163,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 
-    <uz.click.myverdisdk.util.views.OverlayViewQrCode
+    <uz.digid.myverdisdk.util.views.OverlayViewQrCode
         android:id="@+id/qrCodeView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

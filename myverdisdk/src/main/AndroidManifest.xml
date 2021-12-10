@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="uz.click.myverdisdk">
+    package="uz.digid.myverdisdk">
 
     <uses-permission android:name="android.permission.NFC" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -11,18 +11,18 @@
 
     <application>
         <activity
-            android:name=".impl.RegisterRequestActivity"
+            android:name="uz.digid.myverdisdk.impl.RegisterRequestActivity"
             android:exported="true" />
         <activity
-            android:name=".impl.selfie.SelfieActivity"
+            android:name="uz.digid.myverdisdk.impl.selfie.SelfieActivity"
             android:exported="true"
             android:theme="@style/Base.Theme.App" />
         <activity
-            android:name=".impl.scan.ScanActivity"
+            android:name="uz.digid.myverdisdk.impl.scan.ScanActivity"
             android:exported="true"
             android:theme="@style/Base.Theme.App" />
         <activity
-            android:name=".impl.nfc.NfcActivity"
+            android:name="uz.digid.myverdisdk.impl.nfc.NfcActivity"
             android:exported="true"
             android:theme="@style/Base.Theme.App" />
     </application>

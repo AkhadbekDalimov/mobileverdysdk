@@ -7,7 +7,7 @@
     android:background="@color/white"
     android:gravity="center"
     android:orientation="vertical"
-    tools:context=".MainActivity">
+    tools:context="uz.digid.myverdisample.MainActivity">
 
 
     <View
@@ -33,7 +33,7 @@
         app:layout_constraintTop_toBottomOf="@id/bgView"
         app:layout_constraintWidth_percent="0.9">
 
-        <uz.click.myverdisdk.utils.StepperNavigationView
+        <uz.digid.myverdisample.utils.StepperNavigationView
             android:id="@+id/stepperNavigation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

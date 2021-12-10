@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="uz.click.myverdisdk">
+    package="uz.digid.myverdisample">
 
     <application
-        android:name="uz.click.myverdisdk.App"
+        android:name="uz.digid.myverdisample.App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -13,7 +13,7 @@
         android:theme="@style/Theme.VerdimSDK">
         <activity
             android:theme="@style/Theme.VerdimSDK"
-            android:name="uz.click.myverdisdk.MainActivity"
+            android:name="uz.digid.myverdisample.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

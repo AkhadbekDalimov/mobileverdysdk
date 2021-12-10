@@ -9,7 +9,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:context=".ui.DocumentInputFragment">
+        tools:context="uz.digid.myverdisample.ui.DocumentInputFragment">
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tlDocumentNumber"
