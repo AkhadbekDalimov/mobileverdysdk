@@ -11,7 +11,7 @@ interface VerdiRegisterListener : Serializable {
     /**
      * Called When SDK methods successfully passes the given requirements.
      */
-    fun onRegisterSuccess()
+    fun onRegisterSuccess(serialNumber : String)
 
     /**
      * Called with exception When SDK methods fails the given requirements.

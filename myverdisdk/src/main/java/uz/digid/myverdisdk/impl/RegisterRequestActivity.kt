@@ -12,6 +12,7 @@ import kotlinx.coroutines.withContext
 import uz.digid.myverdisdk.R
 import uz.digid.myverdisdk.core.Verdi
 import uz.digid.myverdisdk.core.callbacks.ResponseListener
+import uz.digid.myverdisdk.impl.nfc.ImageUtil
 import uz.digid.myverdisdk.model.info.PersonResult
 import uz.digid.myverdisdk.model.request.RegistrationResponse
 
@@ -39,6 +40,7 @@ class RegisterRequestActivity : AppCompatActivity() {
 
                 override fun onSuccess(response: RegistrationResponse) {
                     Verdi.result = response.response ?: PersonResult()
+                    mapPersonResultToFinalResult(Verdi.result)
                     Verdi.verifyListener?.onSuccess()
                     lifecycleScope.launch {
                         withContext(Dispatchers.Main) {
@@ -50,20 +52,22 @@ class RegisterRequestActivity : AppCompatActivity() {
         } else {
             Verdi.registerPerson(object : ResponseListener<RegistrationResponse> {
                 override fun onFailure(e: Exception) {
-                    Verdi.registerListener?.onRegisterError(e)
                     lifecycleScope.launch {
                         withContext(Dispatchers.Main) {
+                            Verdi.registerListener?.onRegisterError(e)
                             finish()
                         }
                     }
                 }
 
                 override fun onSuccess(response: RegistrationResponse) {
-                    Verdi.result = response.response ?: PersonResult()
-                    Verdi.user.scannerSerial = response.response?.clientData?.device?.serialNumber ?: ""
-                    Verdi.registerListener?.onRegisterSuccess()
                     lifecycleScope.launch {
                         withContext(Dispatchers.Main) {
+                            Verdi.result = response.response ?: PersonResult()
+                            mapPersonResultToFinalResult(Verdi.result)
+                            Verdi.user.scannerSerial =
+                                response.response?.clientData?.device?.serialNumber ?: ""
+                            Verdi.registerListener?.onRegisterSuccess(Verdi.user.scannerSerial)
                             finish()
                         }
                     }
@@ -75,5 +79,24 @@ class RegisterRequestActivity : AppCompatActivity() {
             Verdi.cancelAllRequests()
             finish()
         }
+    }
+
+    fun mapPersonResultToFinalResult(personResult: PersonResult) {
+        val finalResult = Verdi.finalResult
+
+        finalResult.livenessScore =
+            Verdi.result.livenessAnswer?.validateResponse?.livenessScore?.liveness ?: -1.0
+        finalResult.similarityScore =
+            Verdi.result.livenessAnswer?.validateResponse?.similarityScore?.similarity ?: -1.0
+        val bitmapPassport = ImageUtil.convert(Verdi.result.modelPersonPhoto?.personPhoto)
+        if (bitmapPassport != null) {
+            finalResult.passportPhoto = bitmapPassport
+        }
+        val bitmapSelfie = ImageUtil.convert(Verdi.result.modelPersonPhoto?.additional)
+        if (bitmapSelfie != null) {
+            finalResult.selfiePhoto = bitmapSelfie
+        }
+        finalResult.personPairList = personResult.person?.getPersonPairList()
+        finalResult.addressPairList = personResult.address?.getAddressPairList()
     }
 }

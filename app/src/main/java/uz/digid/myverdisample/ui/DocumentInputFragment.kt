@@ -106,8 +106,8 @@ class DocumentInputFragment : Fragment(), VerdiListener, VerdiRegisterListener {
         viewModel.changeStep(2)
     }
 
-    override fun onRegisterSuccess() {
-        AppPreferences.scannerSerialNumber = Verdi.user.scannerSerial
+    override fun onRegisterSuccess(serialNumber: String) {
+        AppPreferences.scannerSerialNumber = serialNumber
         viewModel.changeStep(2)
     }
 

@@ -14,6 +14,7 @@ import uz.digid.myverdisdk.core.errors.VerdiNotInitializedException
 import uz.digid.myverdisdk.impl.nfc.NfcActivity
 import uz.digid.myverdisdk.impl.scan.ScanActivity
 import uz.digid.myverdisdk.impl.selfie.SelfieActivity
+import uz.digid.myverdisdk.model.FinalResult
 import uz.digid.myverdisdk.model.info.PersonResult
 import uz.digid.myverdisdk.model.request.RegistrationResponse
 import uz.digid.myverdisdk.util.DateUtil
@@ -42,6 +43,8 @@ object Verdi {
 
     var result = PersonResult()
 
+    var finalResult = FinalResult()
+
     private var nfcAdapter: NfcAdapter? = null
 
     val isNfcAvailable: Boolean
@@ -52,6 +55,12 @@ object Verdi {
 
     val isUserRegistered: Boolean
         get() = user.scannerSerial.isNotEmpty()
+
+    var logs: Boolean
+        get() = VerdiManager.logs
+        set(value) {
+            VerdiManager.logs = value
+        }
 
     /**
      * This method is a starter method. It should be called preferably in the Application class,
@@ -111,9 +120,14 @@ object Verdi {
     }
 
     /**
-     * It will return NfcInvalidDataException onError method if Passport info is Empty
+     *  This method will register the current user based on the info provided
+     *  It will trigger NFCActivity first (if available) and then SelfieActivity.
+     *  Finally, triggers register request.
      * @param Activity
-     * @param VerdiListener
+     * @param passportSerialNumber
+     * @param birthDate
+     * @param dateOfExpiry
+     * @param listener - The callback of the results
      */
     @[JvmStatic Keep]
     fun proceedNfcAndSelfie(
@@ -154,7 +168,7 @@ object Verdi {
     }
 
     @[JvmStatic Keep]
-    fun registerPerson(listener: ResponseListener<RegistrationResponse>) {
+    internal  fun registerPerson(listener: ResponseListener<RegistrationResponse>) {
         if (this::verdiManager.isInitialized) {
             verdiManager.registerPerson(listener)
         } else {
@@ -163,7 +177,7 @@ object Verdi {
     }
 
     @[JvmStatic Keep]
-    fun verifyPerson(listener: ResponseListener<RegistrationResponse>) {
+    internal fun verifyPerson(listener: ResponseListener<RegistrationResponse>) {
         if (this::verdiManager.isInitialized) {
             verdiManager.verifyPerson(listener)
         } else {
@@ -174,5 +188,6 @@ object Verdi {
     internal fun cancelAllRequests() {
         verdiManager.cancelAllRunningCalls()
     }
+
 
 }

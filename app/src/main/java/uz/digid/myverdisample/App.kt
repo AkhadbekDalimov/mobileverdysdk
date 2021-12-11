@@ -14,6 +14,8 @@ class App : Application() {
         AppPreferences.init(applicationContext)
 
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+//        Verdi.logs = true
+
         val config = VerdiUserConfig
             .Builder()
             .locale("uz")

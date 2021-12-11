@@ -9,7 +9,6 @@ import androidx.core.content.ContextCompat
 import uz.digid.myverdisample.R
 import uz.digid.myverdisdk.core.Verdi
 import uz.digid.myverdisample.databinding.FragmentLivenessBinding
-import uz.digid.myverdisdk.impl.nfc.ImageUtil
 import java.math.RoundingMode
 
 class LivenessFragment : Fragment() {
@@ -28,18 +27,11 @@ class LivenessFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val livenessScore =
-            Verdi.result.livenessAnswer?.validateResponse?.livenessScore?.liveness ?: -1.0
+            Verdi.finalResult.livenessScore
         val similarityScore =
-            Verdi.result.livenessAnswer?.validateResponse?.similarityScore?.similarity ?: -1.0
-        val bitmapPassport = ImageUtil.convert(Verdi.result.modelPersonPhoto?.personPhoto)
-        if (bitmapPassport != null) {
-            binding.ivPassport.setImageBitmap(bitmapPassport)
-        }
-        val bitmapSelfie = ImageUtil.convert(Verdi.result.modelPersonPhoto?.additional)
-        if (bitmapSelfie != null) {
-            binding.ivSelfie.setImageBitmap(bitmapSelfie)
-        }
-
+            Verdi.finalResult.similarityScore
+        binding.ivPassport.setImageBitmap(Verdi.finalResult.passportPhoto)
+        binding.ivSelfie.setImageBitmap(Verdi.finalResult.selfiePhoto)
         binding.tvLivenessLabel.setText(R.string.liveness)
         binding.tvSimilarityLabel.setText(R.string.similarity)
         binding.tvLivenessValue.text =

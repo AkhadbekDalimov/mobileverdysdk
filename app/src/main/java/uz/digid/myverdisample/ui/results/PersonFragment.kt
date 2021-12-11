@@ -24,7 +24,7 @@ class PersonFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val personInfoPairList = Verdi.result.person?.getPersonPairList()
+        val personInfoPairList = Verdi.finalResult.personPairList
 
         personInfoPairList?.forEach {
             val itemInfoBinding = ItemInfoBinding.inflate(layoutInflater, binding.root, false)

@@ -25,7 +25,7 @@ class AddressFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val addressPairList = Verdi.result.address?.getAddressPairList()
+        val addressPairList = Verdi.finalResult.addressPairList
         addressPairList?.forEach {
             val itemInfoBinding = ItemInfoBinding.inflate(layoutInflater, binding.root, false)
             itemInfoBinding.tvLabel.text = it.first

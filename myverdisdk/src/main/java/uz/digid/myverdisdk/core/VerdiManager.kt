@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit
 class VerdiManager(private var applicationHandler: Handler) {
 
     companion object {
-        var logs = true
+        var logs = false
         private const val CONNECT_TIME_OUT: Long = 10 * 1000 // 10 second
         private const val READ_TIME_OUT: Long = 10 * 1000 // 10 second
         private const val WRITE_TIME_OUT: Long = 10 * 1000 // 10 second
