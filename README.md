@@ -4,6 +4,8 @@
 
 This SDK can be used to identify a user via passport or Id Card. 
 
+<img src="/screenshots/step1_policy.jpg" width="20%" height="90%"> <img src="/screenshots/step2_document.jpg" width="20%"  height="90%"> <img src="/screenshots/step3_identification.jpg" width="20%"  height="90%"> 
+
 In this repository, you can find the library itself and the Sample app which implements it.
 
 * [Library](https://gitlab.com/islomov49/verdimsdk/-/tree/master/myverdisdk)
