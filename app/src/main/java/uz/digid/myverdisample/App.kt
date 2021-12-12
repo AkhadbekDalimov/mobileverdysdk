@@ -14,7 +14,6 @@ class App : Application() {
         AppPreferences.init(applicationContext)
 
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-//        Verdi.logs = true
 
         val config = VerdiUserConfig
             .Builder()
@@ -22,5 +21,7 @@ class App : Application() {
             .appId("P8g13lFKmXo8TlFO")
             .build()
         Verdi.init(this, config)
+        Verdi.logs = true
+
     }
 }

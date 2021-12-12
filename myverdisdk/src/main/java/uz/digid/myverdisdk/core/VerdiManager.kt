@@ -8,6 +8,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import uz.digid.myverdisdk.core.callbacks.ResponseListener
 import uz.digid.myverdisdk.core.errors.AppIdEmptyException
 import uz.digid.myverdisdk.core.errors.ServerNotAvailableException
+import uz.digid.myverdisdk.core.errors.UnknownErrorException
 import uz.digid.myverdisdk.core.errors.VerdiNotInitializedException
 import uz.digid.myverdisdk.model.info.ModelServiceInfo
 import uz.digid.myverdisdk.model.info.PersonResult
@@ -36,9 +37,9 @@ class VerdiManager(private var applicationHandler: Handler) {
         const val APP_ID_CLICK = "P8g13lFKmXo8TlFO"
         var REQUEST_CHECK_APP_ID = "mobile/data/${LANGUAGE}/checkAppId"
         var REQUEST_SEND_PHONE = "digid-service/phone/${LANGUAGE}/send"
-        var  REQUEST_CHECK_PHONE = "digid-service/phone/${LANGUAGE}/check"
-        var  REQUEST_REGISTRATION = "pinpp/${LANGUAGE}/registration"
-        var  REQUEST_VERIFICATION = "pinpp/${LANGUAGE}/verification"
+        var REQUEST_CHECK_PHONE = "digid-service/phone/${LANGUAGE}/check"
+        var REQUEST_REGISTRATION = "pinpp/${LANGUAGE}/registration"
+        var REQUEST_VERIFICATION = "pinpp/${LANGUAGE}/verification"
 
         const val AUTH_CHECK_APP_ID = "Basic dGVzdHJlYWQ6dGVzdHBhc3M="
         const val AUTH_PHONE = "Basic ZGlnaWQ6ZGlnaWQyMDE5"
@@ -97,22 +98,23 @@ class VerdiManager(private var applicationHandler: Handler) {
             }
 
             override fun onResponse(call: Call, response: Response) {
-                applicationHandler.post {
-                    if (response.isSuccessful) {
-                        if (response.body() == null) {
-                            listener.onFailure(
-                                ServerNotAvailableException(
-                                    response.code(),
-                                    response.message()
-                                )
+                if (response.isSuccessful) {
+                    if (response.body() == null) {
+                        listener.onFailure(
+                            ServerNotAvailableException(
+                                response.code(),
+                                response.message()
                             )
-                        }
+                        )
+                    }
 
-                        response.body()?.let {
 
-                            val initialResponse =
-                                moshi.adapter<AppIdResponse>(AppIdResponse::class.java)
-                                    .fromJson(it.string())
+                    if (response.body() != null) {
+                        val initialResponse =
+                            moshi.adapter<AppIdResponse>(AppIdResponse::class.java)
+                                .lenient()
+                                .fromJson(response.body()!!.string())
+                        applicationHandler.post {
                             when (initialResponse?.code) {
                                 0 -> {
                                     Verdi.isAppIdAvailable = true
@@ -128,13 +130,18 @@ class VerdiManager(private var applicationHandler: Handler) {
                                 }
                             }
                         }
-
                     } else {
                         listener.onFailure(
-                            ServerNotAvailableException(response.code(), response.message())
+                            UnknownErrorException(response.code(), response.message())
                         )
                     }
+
+                } else {
+                    listener.onFailure(
+                        ServerNotAvailableException(response.code(), response.message())
+                    )
                 }
+
             }
         })
     }
@@ -218,9 +225,9 @@ class VerdiManager(private var applicationHandler: Handler) {
             }
 
             override fun onResponse(call: Call, response: Response) {
-                applicationHandler.post {
-                    if (response.isSuccessful) {
-                        if (response.body() == null) {
+                if (response.isSuccessful) {
+                    if (response.body() == null) {
+                        applicationHandler.post {
                             listener.onFailure(
                                 ServerNotAvailableException(
                                     response.code(),
@@ -228,38 +235,39 @@ class VerdiManager(private var applicationHandler: Handler) {
                                 )
                             )
                         }
-
-                        response.body()?.let {
-                            val initialResponse =
-                                moshi.adapter<RegistrationResponse>(RegistrationResponse::class.java)
-                                    .fromJson(it.string())
-                            when (initialResponse?.code) {
-                                0 -> {
-                                    Verdi.result = initialResponse.response ?: PersonResult()
-                                    VerdiPreferences.clientPublicKey = publicKey
-                                    VerdiPreferences.deviceSerialNumber =
-                                        initialResponse.response?.clientData?.device?.serialNumber
-                                            ?: ""
-                                    listener.onSuccess(initialResponse)
-                                }
-                                else -> {
-                                    Verdi.result = initialResponse?.response ?: PersonResult()
-                                    listener.onFailure(
-                                        ErrorUtils.getException(
-                                            initialResponse?.code,
-                                            initialResponse?.message
-                                        )
+                    }
+                    response.body()?.let {
+                        val initialResponse =
+                            moshi.adapter<RegistrationResponse>(RegistrationResponse::class.java)
+                                .lenient()
+                                .fromJson(it.string())
+                        when (initialResponse?.code) {
+                            0 -> {
+                                Verdi.result = initialResponse.response ?: PersonResult()
+                                VerdiPreferences.clientPublicKey = publicKey
+                                VerdiPreferences.deviceSerialNumber =
+                                    initialResponse.response?.clientData?.device?.serialNumber
+                                        ?: ""
+                                listener.onSuccess(initialResponse)
+                            }
+                            else -> {
+                                Verdi.result = initialResponse?.response ?: PersonResult()
+                                listener.onFailure(
+                                    ErrorUtils.getException(
+                                        initialResponse?.code,
+                                        initialResponse?.message
                                     )
-                                }
+                                )
                             }
                         }
-
-                    } else {
-                        listener.onFailure(
-                            ServerNotAvailableException(response.code(), response.message())
-                        )
                     }
+
+                } else {
+                    listener.onFailure(
+                        ServerNotAvailableException(response.code(), response.message())
+                    )
                 }
+
 
             }
         })
@@ -289,7 +297,8 @@ class VerdiManager(private var applicationHandler: Handler) {
             return
         }
 
-        val signString = md5(guid + deviceSerialNumber + deviceID + VerdiPreferences.clientPublicKey)
+        val signString =
+            md5(guid + deviceSerialNumber + deviceID + VerdiPreferences.clientPublicKey)
 
         val personPhoto = ModelPersonPhotoRequest(null, null, Verdi.user.imageFaceBase?.toBase64())
 
@@ -331,9 +340,9 @@ class VerdiManager(private var applicationHandler: Handler) {
             }
 
             override fun onResponse(call: Call, response: Response) {
-                applicationHandler.post {
-                    if (response.isSuccessful) {
-                        if (response.body() == null) {
+                if (response.isSuccessful) {
+                    if (response.body() == null) {
+                        applicationHandler.post {
                             listener.onFailure(
                                 ServerNotAvailableException(
                                     response.code(),
@@ -341,29 +350,36 @@ class VerdiManager(private var applicationHandler: Handler) {
                                 )
                             )
                         }
+                    }
 
-                        response.body()?.let {
-                            val initialResponse =
-                                moshi.adapter<RegistrationResponse>(RegistrationResponse::class.java)
-                                    .fromJson(it.string())
-                            applicationHandler.post {
-                                when (initialResponse?.code) {
-                                    0 -> {
-                                        listener.onSuccess(initialResponse)
-                                    }
-                                    else -> {
-                                        listener.onFailure(
-                                            ErrorUtils.getException(
-                                                initialResponse?.code,
-                                                initialResponse?.message
-                                            )
+                    if (response.body() != null) {
+                        val initialResponse =
+                            moshi.adapter<RegistrationResponse>(RegistrationResponse::class.java)
+                                .lenient()
+                                .fromJson(response.body()!!.string())
+                        applicationHandler.post {
+                            when (initialResponse?.code) {
+                                0 -> {
+                                    listener.onSuccess(initialResponse)
+                                }
+                                else -> {
+                                    listener.onFailure(
+                                        ErrorUtils.getException(
+                                            initialResponse?.code,
+                                            initialResponse?.message
                                         )
-                                    }
+                                    )
                                 }
                             }
                         }
-
                     } else {
+                        listener.onFailure(
+                            UnknownErrorException(response.code(), response.message())
+                        )
+                    }
+
+                } else {
+                    applicationHandler.post {
                         listener.onFailure(
                             ServerNotAvailableException(response.code(), response.message())
                         )
