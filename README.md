@@ -128,6 +128,7 @@ Above 2 steps taken sequentially by calling  `Verdi.proceedNfcAndSelfie`. The do
                     }
                 )
 ```
+<img src="/screenshots/nfc.jpg" width="20%">
 
 ### 2.Authorization
 Authorization happens only after Identification process. The User should only take a selfie, and sent it with the `serialNumber` from the **Identification** process. 
