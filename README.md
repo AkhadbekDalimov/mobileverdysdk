@@ -127,7 +127,7 @@ Above 2 steps taken sequentially by calling  `Verdi.proceedNfcAndSelfie`. The do
                 )
 ```
 
-###2.Authorization
+### 2.Authorization
 Authorization happens only after Identification process. The User should only take a selfie, and sent `serialNumber` from the **Identification** process. 
 
 **Example**
@@ -148,6 +148,20 @@ Authorization happens only after Identification process. The User should only ta
     )
 ```
 
+In the end, `Verdi.finalResult` object holds all the required final results:
+
+**Example**
+
+```kotlin
+data class FinalResult(
+    var livenessScore: Double = 0.0, // if livenessScore > 0.79, then the user is identified
+    var similarityScore: Double = 0.0, // if similarityScore > 0.46 then the user is identified
+    var passportPhoto: Bitmap? = null, // passportPhoto, if NFC used during Identification Process
+    var selfiePhoto: Bitmap? = null,
+    var personPairList : List<Pair<String, String>>? = ArrayList(), // Key - data name, Value - User Info
+    var addressPairList : List<Pair<String, String>>? = ArrayList() // Key - data name, Value - Address Info
+)
+```
 
 
 
