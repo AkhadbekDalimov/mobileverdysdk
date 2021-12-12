@@ -57,7 +57,7 @@ Example :
 
 ```
 
-Basically the SDK has 2 main features. **Identification** and **Authorization**. 
+### Basically the SDK has 2 main features. **Identification** and **Authorization**. 
 
 ### Identification
 
@@ -89,7 +89,7 @@ Basically the SDK has 2 main features. **Identification** and **Authorization**.
             * @param verdiListener It will be callback of the results
             * @param isQrCodeScan by default It will scan Passport. To change it to scan ID Card Pass true
             */
-           Verdi.openDocumentScanActivity(requireActivity(), object :  VerdiListener{
+           Verdi.openDocumentScanActivity(requireActivity(), object : VerdiListener{
                 override fun onSuccess() {
                     binding.etDocumentNumber.setText(Verdi.user.serialNumber)
                     binding.etDateOfBirth.setText(Verdi.user.birthDate)
@@ -116,7 +116,7 @@ Above 2 steps taken sequentially by calling  `Verdi.proceedNfcAndSelfie`. The do
                     viewModel.passportSeries,
                     viewModel.dateOfBirth,
                     viewModel.dateOfExpiry,
-                    object : VerdiRegisterListener{
+                    object:VerdiRegisterListener{
                         override fun onRegisterSuccess(serialNumber: String) {
                             AppPreferences.scannerSerialNumber = serialNumber
                         }
@@ -128,14 +128,14 @@ Above 2 steps taken sequentially by calling  `Verdi.proceedNfcAndSelfie`. The do
 ```
 
 ### 2.Authorization
-Authorization happens only after Identification process. The User should only take a selfie, and sent `serialNumber` from the **Identification** process. 
+Authorization happens only after Identification process. The User should only take a selfie, and sent it with the `serialNumber` from the **Identification** process. 
 
 **Example**
 
 ```kotlin
     Verdi.openSelfieActivity(
         requireActivity(), 
-        object : VerdiListener {
+        object:VerdiListener {
             override fun onSuccess() {
 
             }
