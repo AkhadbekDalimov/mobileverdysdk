@@ -159,10 +159,10 @@ In the end, `Verdi.finalResult` object holds all the required final results:
 data class FinalResult(
     var livenessScore: Double = 0.0, // if livenessScore > 0.79, then the user is identified
     var similarityScore: Double = 0.0, // if similarityScore > 0.46 then the user is identified
-    var passportPhoto: Bitmap? = null, // passportPhoto, if NFC used during Identification Process
+    var passportPhoto: Bitmap? = null, // passportPhoto, if NFC is used during the Identification Process
     var selfiePhoto: Bitmap? = null,
-    var personPairList : List<Pair<String, String>>? = ArrayList(), // Key - data name, Value - User Info
-    var addressPairList : List<Pair<String, String>>? = ArrayList() // Key - data name, Value - Address Info
+    var personPairList : List<Pair<String, String>>? = ArrayList(), // Key - data name, Value - The user Info
+    var addressPairList : List<Pair<String, String>>? = ArrayList() // Key - data name, Value - The address Info
 )
 ```
 
