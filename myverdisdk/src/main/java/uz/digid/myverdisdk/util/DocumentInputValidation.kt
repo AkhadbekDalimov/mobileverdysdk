@@ -7,9 +7,17 @@ import java.util.*
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
+/**
+ * This class's intent is to validate the correctness of the Document info
+ * @author Azamat Makhkamov
+ */
 class DocumentInputValidation {
 
     companion object {
+        /**
+         * This method will validate the Passport, Birth date, and Expiration Date
+         * @param documentInputType - Enum Class type of the Document
+         */
         fun isInputValid(documentInputType: DocumentInputType): Boolean {
 
             when (documentInputType) {
@@ -47,6 +55,9 @@ class DocumentInputValidation {
             }
         }
 
+        /**
+         * returns true if ALl the Document info satisfy requirements else false
+         */
         fun isPassportInfoValid(): Boolean {
             return isInputValid(DocumentInputType.PASSPORT((Verdi.user.serialNumber)))
                     && isInputValid(DocumentInputType.BIRTHDAY((Verdi.user.birthDate)))
