@@ -95,7 +95,7 @@ afterEvaluate {
                 from components.release
                 groupId = 'uz.digid.myverdisdk'
                 artifactId = 'myverdisdk'
-                version = '0.0.1'
+                version = '1.0.0'
             }
         }
     }
