@@ -8,8 +8,8 @@ This SDK can be used to identify a user via passport or Id Card.
 
 In this repository, you can find the library itself and the Sample app which implements it.
 
-* [Library](https://gitlab.com/islomov49/verdimsdk/-/tree/master/myverdisdk)
-* [Sample app, which integrates Digid Mobile SDK](https://gitlab.com/islomov49/verdimsdk/-/tree/master/app)
+* [Library](https://github.com/AkhadbekDalimov/mobileverdyverdysdk/tree/main/myverdisdk)
+* [Sample app, which integrates Digid Mobile SDK](https://github.com/AkhadbekDalimov/mobileverdyverdysdk/tree/main/app)
 
 
 ### Implementation
