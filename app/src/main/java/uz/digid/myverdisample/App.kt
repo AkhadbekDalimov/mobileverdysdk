@@ -2,9 +2,9 @@ package uz.digid.myverdisample
 
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
+import uz.digid.myverdisample.utils.AppPreferences
 import uz.digid.myverdisdk.core.Verdi
 import uz.digid.myverdisdk.core.VerdiUserConfig
-import uz.digid.myverdisample.utils.AppPreferences
 
 
 class App : Application() {

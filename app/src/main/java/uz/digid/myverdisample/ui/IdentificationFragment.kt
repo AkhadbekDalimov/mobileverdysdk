@@ -2,11 +2,10 @@ package uz.digid.myverdisample.ui
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.Fragment
 import com.google.android.material.tabs.TabLayoutMediator
 import uz.digid.myverdisample.databinding.FragmentIdentificationBinding
 import uz.digid.myverdisample.ui.adapter.ResultsViewPagerAdapter

@@ -1,22 +1,21 @@
 package uz.digid.myverdisample.ui
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.doAfterTextChanged
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import uz.digid.myverdisample.databinding.FragmentDocumentInputBinding
+import uz.digid.myverdisample.utils.AppPreferences
+import uz.digid.myverdisample.utils.toast
 import uz.digid.myverdisdk.core.Verdi
 import uz.digid.myverdisdk.core.callbacks.VerdiListener
 import uz.digid.myverdisdk.core.callbacks.VerdiRegisterListener
 import uz.digid.myverdisdk.util.DocumentInputType
 import uz.digid.myverdisdk.util.DocumentInputValidation
-import uz.digid.myverdisample.utils.AppPreferences
-import uz.digid.myverdisample.utils.toast
-import java.lang.Exception
 
 class DocumentInputFragment : Fragment(), VerdiListener, VerdiRegisterListener {
     private lateinit var binding: FragmentDocumentInputBinding

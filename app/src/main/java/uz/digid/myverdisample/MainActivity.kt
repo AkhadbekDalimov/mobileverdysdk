@@ -1,8 +1,8 @@
 package uz.digid.myverdisample
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import uz.digid.myverdisample.databinding.ActivityMainBinding
 import uz.digid.myverdisample.ui.adapter.StepsViewPagerAdapter

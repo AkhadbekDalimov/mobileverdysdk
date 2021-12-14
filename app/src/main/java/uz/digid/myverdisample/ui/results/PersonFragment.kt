@@ -1,13 +1,13 @@
 package uz.digid.myverdisample.ui.results
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import uz.digid.myverdisdk.core.Verdi
+import androidx.fragment.app.Fragment
 import uz.digid.myverdisample.databinding.FragmentPersonBinding
 import uz.digid.myverdisample.databinding.ItemInfoBinding
+import uz.digid.myverdisdk.core.Verdi
 
 class PersonFragment : Fragment() {
 

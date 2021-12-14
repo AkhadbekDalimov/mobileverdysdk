@@ -2,18 +2,17 @@ package uz.digid.myverdisample.ui
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import uz.digid.myverdisample.databinding.FragmentPolicyApprovalBinding
-import uz.digid.myverdisdk.core.Verdi
-import uz.digid.myverdisdk.core.callbacks.VerdiListener
 import uz.digid.myverdisample.utils.AppPreferences
 import uz.digid.myverdisample.utils.toast
-import java.lang.Exception
+import uz.digid.myverdisdk.core.Verdi
+import uz.digid.myverdisdk.core.callbacks.VerdiListener
 
 
 class PolicyApprovalFragment : Fragment(), VerdiListener {

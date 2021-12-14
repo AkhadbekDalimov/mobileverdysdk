@@ -12,13 +12,13 @@ import androidx.core.content.withStyledAttributes
 import androidx.navigation.AnimBuilder
 import androidx.navigation.NavController
 import androidx.navigation.navOptions
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import uz.digid.myverdisample.R
 import uz.digid.myverdisample.utils.menus.base.StepperMenu
 import uz.digid.myverdisample.utils.menus.fleets.FleetsStepperMenu
 import uz.digid.myverdisample.utils.menus.progress.ProgressStepperMenu
 import uz.digid.myverdisample.utils.menus.tab.TabNumberedStepperMenu
 import uz.digid.myverdisample.utils.menus.tab.TabStepperMenu
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import uz.digid.myverdisample.R
 
 /**
  * Stepper Navigation for creating a wizard-like step-through user interface that uses a

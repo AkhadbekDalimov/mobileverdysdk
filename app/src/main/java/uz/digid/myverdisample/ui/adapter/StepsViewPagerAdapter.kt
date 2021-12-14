@@ -4,7 +4,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import uz.digid.myverdisample.ui.DocumentInputFragment
 import uz.digid.myverdisample.ui.IdentificationFragment
 import uz.digid.myverdisample.ui.PolicyApprovalFragment
 

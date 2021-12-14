@@ -13,10 +13,10 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.view.isVisible
+import com.google.android.material.card.MaterialCardView
 import uz.digid.myverdisample.R
 import uz.digid.myverdisample.utils.menus.base.StepperMenu
 import uz.digid.myverdisample.utils.menus.base.StepperMenuItem
-import com.google.android.material.card.MaterialCardView
 import kotlin.math.max
 
 /**
