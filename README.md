@@ -1,4 +1,4 @@
-[![](https://jitpack.io/v/verdimsdk/android-msdk.svg)](https://jitpack.io/#verdi/android-msdk)
+[![](https://jitpack.io/v/AkhadbekDalimov/mobileverdyverdysdk.svg)](https://jitpack.io/#AkhadbekDalimov/mobileverdyverdysdk)
 
 # Verdi Mobile SDK
 
@@ -14,12 +14,25 @@ In this repository, you can find the library itself and the Sample app which imp
 
 ### Implementation
 
+root build.gradle:
+
+```groovy
+
+allprojects {
+    repositories {
+	    //...
+		maven { url 'https://jitpack.io' }
+	}
+}
+
+```
+
 build.gradle:
 
 ```groovy
 
 dependencies {
-	implementation ':${last.version}'
+	implementation 'com.github.AkhadbekDalimov:mobileverdyverdysdk:1.0.1'
 }
 ```
 
