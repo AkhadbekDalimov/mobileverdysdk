@@ -23,6 +23,8 @@ open class TextRecognitionProcessor(
     private val textRecognizer: TextRecognizer = TextRecognition.getClient(textRecognizerOptions)
     private var isDetectPassport = false
     private var isDetectIDCard = false
+    private val patternLinePassportType = Pattern.compile(REGEX_OLD_PASSPORT_UZB)
+    private val patternLineOldIDCardTypes = Pattern.compile(REGEX_OLD_ID_CARD_UZB)
 
     //region ----- Exposed Methods -----
     override fun stop() {
@@ -50,7 +52,6 @@ open class TextRecognitionProcessor(
 
         }
         fullRead = fullRead.uppercase(Locale.ENGLISH)
-        val patternLinePassportType = Pattern.compile(REGEX_OLD_PASSPORT_UZB)
         val matcherLineOldPassportType = patternLinePassportType.matcher(fullRead)
         if (matcherLineOldPassportType.find()) {
             if (!isDetectPassport) {
@@ -76,7 +77,6 @@ open class TextRecognitionProcessor(
             onSuccessMrz(mrzInfo)
 
         } else {
-            val patternLineOldIDCardTypes = Pattern.compile(REGEX_OLD_ID_CARD_UZB)
             val matcherLineOldIDCardTypeUzb = patternLineOldIDCardTypes.matcher(fullRead)
             if (matcherLineOldIDCardTypeUzb.find()) {
                 if (!isDetectIDCard) {
@@ -88,14 +88,20 @@ open class TextRecognitionProcessor(
         }
     }
 
-    val listMRZ = ArrayList<MRZInfo>()
+    private val listMRZ = ArrayList<MRZInfo>()
     var max: Map.Entry<MRZInfo, List<MRZInfo>>? = null
     private fun onSuccessMrz(mrzInfo: MRZInfo) {
         listMRZ.add(mrzInfo)
         when (listMRZ.size) {
-            3 -> {
+            2 -> {
                 max = listMRZ.groupBy { it }.entries.maxByOrNull { it.value.size }
-                if (max?.value?.size == 3) {
+                if (max?.value?.size == 2) {
+                    resultListener.onSuccess(max!!.value.getOrNull(0))
+                }
+            }
+            4 -> {
+                max = listMRZ.groupBy { it }.entries.maxByOrNull { it.value.size }
+                if (max?.value?.size!! >= 3) {
                     resultListener.onSuccess(max!!.value.getOrNull(0))
                 }
             }
@@ -105,16 +111,10 @@ open class TextRecognitionProcessor(
                     resultListener.onSuccess(max!!.value.getOrNull(0))
                 }
             }
-            10 -> {
-                max = listMRZ.groupBy { it }.entries.maxByOrNull { it.value.size }
-                if (max?.value?.size!! >= 6) {
-                    resultListener.onSuccess(max!!.value.getOrNull(0))
-                }
-            }
             else -> {
                 if (listMRZ.size > 10) {
                     max = listMRZ.groupBy { it }.entries.maxByOrNull { it.value.size }
-                    if (max?.value?.size!! >= 10) {
+                    if (max?.value?.size!! >= 6) {
                         resultListener.onSuccess(max!!.value.getOrNull(0))
                     } else {
                         listMRZ.clear()
