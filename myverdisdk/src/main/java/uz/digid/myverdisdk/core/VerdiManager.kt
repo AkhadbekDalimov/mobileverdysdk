@@ -146,7 +146,7 @@ class VerdiManager(private var applicationHandler: Handler) {
         })
     }
 
-    fun registerPerson(listener: ResponseListener<RegistrationResponse>) {
+    fun registerPerson(listener: ResponseListener<RegistrationResponse>, requestGUID: String) {
         if (!Verdi.isAppIdAvailable) {
             checkAppId(object : ResponseListener<Any> {
                 override fun onFailure(e: Exception) {
@@ -154,21 +154,20 @@ class VerdiManager(private var applicationHandler: Handler) {
                 }
 
                 override fun onSuccess(response: Any) {
-                    registerPerson(listener)
+                    registerPerson(listener, requestGUID)
                 }
             })
             return
         }
         val user = Verdi.user
         val publicKey = UUID.randomUUID().toString()
-        val guid = UUID.randomUUID().toString()
         val deviceID: String = user.deviceId
         if (deviceID == "") {
             listener.onFailure(VerdiNotInitializedException())
             return
         }
         val signString = md5(
-            guid +
+            requestGUID +
                     user.serialNumber +
                     user.birthDate +
                     user.dateOfExpiry +
@@ -199,7 +198,7 @@ class VerdiManager(private var applicationHandler: Handler) {
         modelServiceInfo.serviceInfo = serviceInfo
         val passportRequest = PassportInfoRequest(
             appId = Verdi.config.appId,
-            requestGuid = guid,
+            requestGuid = requestGUID,
             signString = signString,
             clientPubKey = publicKey,
             modelMobileData = modelMobileData,
@@ -275,7 +274,7 @@ class VerdiManager(private var applicationHandler: Handler) {
     }
 
 
-    fun verifyPerson(listener: ResponseListener<RegistrationResponse>) {
+    fun verifyPerson(listener: ResponseListener<RegistrationResponse>, requestGUID: String) {
         if (!Verdi.isAppIdAvailable) {
             checkAppId(object : ResponseListener<Any> {
                 override fun onFailure(e: Exception) {
@@ -283,13 +282,12 @@ class VerdiManager(private var applicationHandler: Handler) {
                 }
 
                 override fun onSuccess(response: Any) {
-                    verifyPerson(listener)
+                    verifyPerson(listener, requestGUID)
                 }
             })
             return
         }
         val deviceSerialNumber: String = VerdiPreferences.deviceSerialNumber
-        val guid = UUID.randomUUID().toString()
         val deviceID: String =
             Verdi.user.deviceId
         if (deviceID == "") {
@@ -298,7 +296,7 @@ class VerdiManager(private var applicationHandler: Handler) {
         }
 
         val signString =
-            md5(guid + deviceSerialNumber + deviceID + VerdiPreferences.clientPublicKey)
+            md5(requestGUID + deviceSerialNumber + deviceID + VerdiPreferences.clientPublicKey)
 
         val personPhoto = ModelPersonPhotoRequest(null, null, Verdi.user.imageFaceBase?.toBase64())
 
@@ -315,7 +313,7 @@ class VerdiManager(private var applicationHandler: Handler) {
 
         val passportRequest = PassportInfoRequest(
             appId = Verdi.config.appId,
-            requestGuid = guid,
+            requestGuid = requestGUID,
             signString = signString,
             clientPubKey = VerdiPreferences.clientPublicKey,
             modelPersonPassport = null,

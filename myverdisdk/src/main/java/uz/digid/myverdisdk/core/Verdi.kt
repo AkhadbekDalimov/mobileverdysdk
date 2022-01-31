@@ -19,6 +19,7 @@ import uz.digid.myverdisdk.model.info.PersonResult
 import uz.digid.myverdisdk.model.request.RegistrationResponse
 import uz.digid.myverdisdk.util.DateUtil
 import uz.digid.myverdisdk.util.DocumentInputValidation
+import java.util.*
 
 /**
  * The central Verdi class, where all the important configurations and actions happen
@@ -61,6 +62,8 @@ object Verdi {
         set(value) {
             VerdiManager.logs = value
         }
+
+    var lastRequestGUID = ""
 
     /**
      * This method is a starter method. It should be called preferably in the Application class,
@@ -170,7 +173,8 @@ object Verdi {
     @[JvmStatic Keep]
     internal  fun registerPerson(listener: ResponseListener<RegistrationResponse>) {
         if (this::verdiManager.isInitialized) {
-            verdiManager.registerPerson(listener)
+            lastRequestGUID = UUID.randomUUID().toString()
+            verdiManager.registerPerson(listener, lastRequestGUID)
         } else {
             listener.onFailure(VerdiNotInitializedException())
         }
@@ -179,7 +183,8 @@ object Verdi {
     @[JvmStatic Keep]
     internal fun verifyPerson(listener: ResponseListener<RegistrationResponse>) {
         if (this::verdiManager.isInitialized) {
-            verdiManager.verifyPerson(listener)
+            lastRequestGUID = UUID.randomUUID().toString()
+            verdiManager.verifyPerson(listener, lastRequestGUID)
         } else {
             listener.onFailure(VerdiNotInitializedException())
         }
